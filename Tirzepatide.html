@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тирзепатид: Инфографика</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            list-style: none;
+            gap: 10px;
+        }
+        
+        .nav-item {
+            flex-grow: 0;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            background-color: #f0f5ff;
+            color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .nav-link.active {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        .nav-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            margin-right: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link.active .nav-number {
+            background-color: white;
+            color: var(--secondary);
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 2.5rem 0 1rem;
+        }
+        
+        .tab-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-number {
+            background-color: var(--secondary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .comparison-charts {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .chart-wrapper {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Обновленный CSS для адаптивной сетки */
+        .mechanism-grid, .side-effects, .price-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .mechanism-item { background: linear-gradient(135deg, #f6f9fc 0%, #e9f2f8 100%); padding: 1.5rem; border-radius: 10px; border-left: 4px solid var(--secondary); }
+        
+        /* Обновленные стили контейнера для графиков */
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 4 / 3; 
+            max-width: 500px; 
+            margin: 0 auto; 
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.6));
+        }
+        
+        .effect-card { background: white; padding: 1.2rem; border-radius: 10px; box-shadow: 0 3px 8px rgba(0,0,0,0.08); }
+        /* Обновленные стили фона для акцента опасности */
+        .common { background-color: #fff4e6; border-top: 4px solid var(--warning); }
+        .serious { background-color: #fbe6e6; border-top: 4px solid var(--danger); }
+        .contraindications { background-color: #e6f1f8; border-top: 4px solid var(--primary); }
+        .dosage-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; }
+        .dosage-table th, .dosage-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+        .dosage-table th { background-color: var(--secondary); color: white; }
+        .dosage-table tr:nth-child(even) { background-color: #f9f9f9; }
+        
+        /* Изменено: добавлен глубокий отбрасываемый теневой фильтр для карточек с ценами */
+        .price-card { 
+            background: white; 
+            padding: 1.5rem; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.6)); 
+        }
+
+        /* Обновление: контейнер для price-bar и price-label */
+        .price-item {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+            flex-wrap: nowrap; /* Важное изменение: запрет переноса строки */
+        }
+
+        .price-item span {
+            white-space: nowrap; /* Важное изменение: запрет переноса для текста слева */
+        }
+        
+        .price-bar { 
+            height: 24px; 
+            border-radius: 12px; 
+            flex-grow: 1; 
+            position: relative;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+        }
+        
+        .price-label { 
+            color: white; 
+            font-weight: bold; 
+            line-height: 24px; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            font-size: 12px;
+            white-space: nowrap; /* Запрет переноса для текста цены */
+        }
+
+        /* Отдельные классы для разных градиентов */
+        .tirzepatide-bar {
+            background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+        }
+
+        .semaglutide-bar {
+            background: linear-gradient(90deg, #16a085 0%, #1abc9c 100%);
+        }
+
+        .warning { background-color: #fff4e6; border-left: 4px solid var(--warning); padding: 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
+        .footer { text-align: center; margin-top: 3rem; padding: 2rem 0; color: #7f8c8d; font-size: 0.9rem; }
+        .reference { font-size: 0.8rem; color: #7f8c8d; margin-top: 2rem; text-align: right; }
+        
+        @media (max-width: 767px) {
+            h1 { font-size: 1.5rem; }
+            .dosage-table { display: block; overflow-x: auto; }
+            .nav-link { font-size: 14px; padding: 6px 12px; }
+            .nav-number { width: 20px; height: 20px; font-size: 12px; }
+        }
+        
+        /* Увеличение адаптивности для мобильных устройств */
+        @media (max-width: 480px) {
+            .price-item span {
+                font-size: 14px;
+                /* flex-basis: 50%; */
+            }
+            .price-bar {
+                padding-right: 5px;
+            }
+            .price-label {
+                font-size: 10px;
+            }
+        }
+        
+        /* Новый медиа-запрос для самых маленьких экранов */
+        @media (max-width: 360px) {
+            .price-label {
+                font-size: 9px; /* Еще уменьшаем шрифт, если необходимо */
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <header>
+            <h1>Тирзепатид: Инновация в лечении диабета и ожирения</h1>
+        </header>
+
+        <nav class="navbar">
+            <div class="nav-container">
+                <ul class="nav-menu">
+                    <li class="nav-item"><a data-target="#section1" class="nav-link active"><span class="nav-number">1</span>Механизм</a></li>
+                    <li class="nav-item"><a data-target="#section2" class="nav-link"><span class="nav-number">2</span>Эффективность</a></li>
+                    <li class="nav-item"><a data-target="#section3" class="nav-link"><span class="nav-number">3</span>Безопасность</a></li>
+                    <li class="nav-item"><a data-target="#section4" class="nav-link"><span class="nav-number">4</span>Дозировка</a></li>
+                    <li class="nav-item"><a data-target="#section5" class="nav-link"><span class="nav-number">5</span>Стоимость</a></li>
+                </ul>
+            </div>
+        </nav>
+        
+        <div class="tab-content-wrapper">
+            <section id="section1" class="tab-panel active">
+                <div class="card-header">
+                    <div class="card-number">1</div>
+                    <h2>Детальный механизм действия: ГПП-1, ГИП и Тирзепатид</h2>
+                </div>
+                <h3>Синергия Тирзепатида: Концепция "твинкретина"</h3>
+                <p>Тирзепатид был создан с уникальной способностью активировать рецепторы обоих гормонов, ГПП-1 и ГИП, одновременно. Этот двойной механизм действия обеспечивает комплексное и более мощное воздействие на метаболические процессы.</p>
+                <div class="mechanism-grid">
+                    <div class="mechanism-item">
+                        <h4>Усиление инсулинотропного эффекта</h4>
+                        <p>Активация и ГПП-1, и ГИП рецепторов приводит к значительно большему высвобождению инсулина по сравнению с моноагонистами ГПП-1.</p>
+                    </div>
+                    <div class="mechanism-item">
+                        <h4>Двойное влияние на аппетит</h4>
+                        <p>Замедление опорожнения желудка и усиление чувства насыщения, вызванные ГПП-1, дополняются влиянием ГИП на энергетический баланс и метаболизм жиров.</p>
+                    </div>
+                    <div class="mechanism-item">
+                        <h4>Комплексное воздействие на метаболизм</h4>
+                        <p>Тирзепатид не только снижает уровень глюкозы и массу тела, но и оказывает положительное влияние на другие метаболические показатели.</p>
+                    </div>
+                </div>
+                
+                <h3>Сравнение силы связывания с рецептором ГПП-1</h3>
+                <div class="chart-container">
+                    <canvas id="efficiencyChart"></canvas>
+                </div>
+
+                <h3>Влияние Тирзепатида 15 мг на липидный профиль</h3>
+                <div class="chart-container">
+                    <canvas id="lipidChart"></canvas>
+                </div>
+                
+            </section>
+            
+            <section id="section2" class="tab-panel">
+                <div class="card-header">
+                    <div class="card-number">2</div>
+                    <h2>Клиническая эффективность: Сравнительный анализ</h2>
+                </div>
+                <p>Данные из исследований SURPASS-2 и STEP 1 демонстрируют превосходство Тирзепатида в снижении веса по сравнению с Семаглутидом.</p>
+                <div class="comparison-charts">
+                    <div class="chart-wrapper">
+                        <h3>Снижение массы тела за 72 недели</h3>
+                        <div class="chart-container"><canvas id="weightLossChart"></canvas></div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <h3>Снижение уровня HbA1c (гликированного гемоглобина)</h3>
+                        <div class="chart-container"><canvas id="hba1cChart"></canvas></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section3" class="tab-panel">
+                 <div class="card-header">
+                    <div class="card-number">3</div>
+                    <h2>Профиль безопасности: Побочные эффекты, риски и противопоказания</h2>
+                </div>
+                <p>Профиль безопасности инкретиновых препаратов хорошо изучен и в целом схож для всех представителей класса, включая Тирзепатид.</p>
+                <h3>Наиболее распространенные побочные эффекты</h3>
+                <p>Чаще всего пациенты сталкиваются с гастроинтестинальными нарушениями.</p>
+                <div class="side-effects">
+                    <div class="effect-card common"><h4>Тошнота</h4><p>17−22% в зависимости от дозы Тирзепатида</p></div>
+                    <div class="effect-card common"><h4>Диарея</h4><p>13−16%</p></div>
+                    <div class="effect-card common"><h4>Запор и боль в животе</h4><p>Наиболее выражены в начале терапии</p></div>
+                </div>
+                <h3>Серьезные, но менее частые риски</h3>
+                <div class="side-effects">
+                    <div class="effect-card serious"><h4>Панкреатит</h4><p>Редкий, но потенциально серьезный риск</p></div>
+                    <div class="effect-card serious"><h4>Заболевания желчного пузыря</h4><p>Холелитиаз и холецистит</p></div>
+                    <div class="effect-card serious"><h4>Риск медуллярного рака щитовидной железы</h4><p>На основе доклинических исследований на грызунах</p></div>
+                    <div class="effect-card serious"><h4>Осложнения диабетической ретинопатии</h4><p>Может временно усугубиться при резком улучшении контроля гликемии</p></div>
+                </div>
+                <h3>Ключевые противопоказания</h3>
+                <div class="side-effects">
+                    <div class="effect-card contraindications"><h4>МРЩЖ или МЭН 2 в анамнезе</h4><p>Личный или семейный анамнез</p></div>
+                    <div class="effect-card contraindications"><h4>Сахарный диабет 1-го типа</h4><p>И диабетический кетоацидоз</p></div>
+                    <div class="effect-card contraindications"><h4>Тяжелые желудочно-кишечные заболевания</h4><p>Включая тяжелый гастропарез</p></div>
+                    <div class="effect-card contraindications"><h4>Беременность и лактация</h4><p>Противопоказано применение</p></div>
+                </div>
+            </section>
+
+            <section id="section4" class="tab-panel">
+                <div class="card-header">
+                    <div class="card-number">4</div>
+                    <h2>Дозировки и способы применения</h2>
+                </div>
+                <p>Тирзепатид (в том числе российский аналог Тирзетта®) вводится подкожно один раз в неделю. Для минимизации гастроинтестинальных побочных эффектов лечение начинают с минимальной дозы.</p>
+                
+                <h3>Схема титрования дозы Тирзепатида</h3>
+                <div class="chart-container">
+                    <canvas id="dosageChart"></canvas>
+                </div>
+
+                <h3>Рекомендации по применению</h3>
+                <ul>
+                    <li>Инъекцию можно делать в живот, бедро или верхнюю часть плеча</li>
+                    <li>Желательно проводить инъекцию в один и тот же день недели</li>
+                    <li>Хранить в холодильнике при температуре от 2°C до 8°C</li>
+                    <li>Не замораживать и защищать от света</li>
+                </ul>
+                <div class="warning"><strong>Важно:</strong> Никогда не делиться шприц-ручкой или иглами с другими людьми.</div>
+            </section>
+
+            <section id="section5" class="tab-panel">
+                <div class="card-header">
+                    <div class="card-number">5</div>
+                    <h2>Анализ стоимости и доступности препаратов</h2>
+                </div>
+                <p>На российском рынке, в отличие от США и Европы, где доступны оригинальные препараты Eli Lilly и Novo Nordisk, ситуация уникальна. Российский потребитель имеет доступ только к отечественным аналогам.</p>
+                <h3>Сравнение цен на рецептурные аналоги в аптеках Москвы</h3>
+                <div class="price-comparison">
+                     <div class="price-card">
+                        <h4>Тирзепатид (Тирзетта®)</h4>
+                        <div class="price-item"><span>2.5 мг (4 шприца)</span><div class="price-bar tirzepatide-bar" style="width: 35%;"><span class="price-label">6,462−7,352 ₽</span></div></div>
+                        <div class="price-item"><span>5 мг (4 шприца)</span><div class="price-bar tirzepatide-bar" style="width: 50%;"><span class="price-label">9,100−9,776 ₽</span></div></div>
+                        <div class="price-item"><span>7.5 мг (4 шприца)</span><div class="price-bar tirzepatide-bar" style="width: 65%;"><span class="price-label">11,400−12,200 ₽</span></div></div>
+                        <div class="price-item"><span>10 мг (4 шприца)</span><div class="price-bar tirzepatide-bar" style="width: 75%;"><span class="price-label">14,400−14,626 ₽</span></div></div>
+                        <div class="price-item"><span>12.5 мг (4 шприца)</span><div class="price-bar tirzepatide-bar" style="width: 85%;"><span class="price-label">16,200−16,281 ₽</span></div></div>
+                        <div class="price-item"><span>15 мг (4 шприца)</span><div class="price-bar tirzepatide-bar" style="width: 100%;"><span class="price-label">18,500−18,597 ₽</span></div></div>
+                    </div>
+                    <div class="price-card">
+                        <h4>Семаглутид (аналоги)</h4>
+                        <div class="price-item"><span>Велгия® <br>0.25 мг (4 шприца)</span><div class="price-bar semaglutide-bar" style="width: 20%;"><span class="price-label">3,011−3,937 ₽</span></div></div>
+                        <div class="price-item"><span>Семавик® <br>0.25/0.5/1 мг         <br>(1 шпр.-ручка)</span><div class="price-bar semaglutide-bar" style="width: 25%;"><span class="price-label">3,757−4,665 ₽</span></div></div>
+                    </div>
+                </div>
+                <h3>Предостережение о неофициальном рынке</h3>
+                <div class="warning">
+                    <p>На неофициальном рынке (Ozon, Wildberries, Яндекс.Маркет) под запросы "Ozempic" или "Велгия" выдаются десятки предложений "для похудения", не имеющих отношения к оригинальным препаратам.</p>
+                    <p>Эти продукты являются БАДами с неизвестным составом и недоказанной эффективностью.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="container">
+            <p>Интерактивная инфографика о Тирзепатиде | Данные носят ознакомительный характер, необходима консультация специалиста</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const navMenu = document.querySelector('.nav-menu');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        const charts = {};
+
+        Chart.register(ChartDataLabels);
+
+        function create3DBar(ctx, chartArea, index, dataPoint, scale) {
+            const bar = scale.getBarBounds(index);
+            const x = bar.x;
+            const y = bar.y;
+            const width = bar.width;
+            const height = bar.height;
+            const depth = width * 0.4;
+            
+            const frontGradient = ctx.createLinearGradient(x, y, x + width, y);
+            frontGradient.addColorStop(0, '#3498db');
+            frontGradient.addColorStop(1, '#6dd5ed');
+            ctx.fillStyle = frontGradient;
+            ctx.fillRect(x, y, width, height);
+
+            const topGradient = ctx.createLinearGradient(x, y - depth, x, y);
+            topGradient.addColorStop(0, '#87CEEB');
+            topGradient.addColorStop(1, '#add8e6');
+            ctx.fillStyle = topGradient;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + depth, y - depth);
+            ctx.lineTo(x + width + depth, y - depth);
+            ctx.lineTo(x + width, y);
+            ctx.closePath();
+            ctx.fill();
+
+            const sideGradient = ctx.createLinearGradient(x + width, y, x + width + depth, y);
+            sideGradient.addColorStop(0, '#2980b9');
+            sideGradient.addColorStop(1, '#1e88e5');
+            ctx.fillStyle = sideGradient;
+            ctx.beginPath();
+            ctx.moveTo(x + width, y);
+            ctx.lineTo(x + width + depth, y - depth);
+            ctx.lineTo(x + width + depth, y + height - depth);
+            ctx.lineTo(x + width, y + height);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 5;
+            ctx.shadowOffsetY = 5;
+        }
+
+        function renderChart(canvasId, type, data, options) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const context = canvas.getContext('2d');
+            
+            if (charts[canvasId]) {
+                charts[canvasId].destroy();
+            }
+
+            const newChart = new Chart(context, {
+                type: type,
+                data: data,
+                options: options
+            });
+            charts[canvasId] = newChart;
+
+            if (type === 'bar') {
+                 newChart.options.plugins.legend.display = false;
+                 newChart.options.scales.x.grid.display = false;
+                 newChart.options.plugins.beforeDraw = (chart) => {
+                     const ctx = chart.ctx;
+                     const chartArea = chart.chartArea;
+                     const dataset = chart.data.datasets[0];
+                     
+                     ctx.shadowColor = 'transparent';
+                     ctx.shadowBlur = 0;
+                     ctx.shadowOffsetX = 0;
+                     ctx.shadowOffsetY = 0;
+
+                     dataset.data.forEach((dataPoint, index) => {
+                         create3DBar(ctx, chartArea, index, dataPoint, chart.scales.x);
+                     });
+                 };
+                 newChart.update();
+            }
+        }
+        
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    color: '#333',
+                    font: { size: 18 }
+                }
+            },
+            scales: {
+                y: {
+                    grid: { color: 'rgba(0,0,0,0.1)' },
+                    ticks: { color: '#333' }
+                },
+                x: {
+                    grid: { color: 'rgba(0,0,0,0.1)' },
+                    ticks: { color: '#333' }
+                }
+            }
+        };
+        
+        const barChartOptions = {
+            ...chartOptions,
+            barPercentage: 0.6,
+            categoryPercentage: 0.8,
+            borderRadius: { topLeft: 6, topRight: 6 },
+            scales: {
+                ...chartOptions.scales,
+                x: {
+                    ...chartOptions.scales.x,
+                    grid: { display: false }
+                }
+            }
+        };
+        
+        const dosageChartOptions = {
+            ...chartOptions,
+            scales: {
+                ...chartOptions.scales,
+                y: {
+                    ...chartOptions.scales.y,
+                    title: { display: true, text: 'Доза (мг)', color: '#333' }
+                },
+                x: {
+                    ...chartOptions.scales.x,
+                    title: { display: true, text: 'Недели терапии', color: '#333' }
+                }
+            },
+            elements: {
+                line: {
+                    tension: 0.4
+                },
+                point: {
+                    radius: 5,
+                    backgroundColor: '#3498db',
+                    hoverRadius: 7
+                }
+            },
+            plugins: {
+                ...chartOptions.plugins,
+                tooltip: {
+                    callbacks: {
+                        label: (context) => `Доза: ${context.raw} мг`
+                    }
+                },
+                // Добавляем плагин datalabels для линейного графика дозировки
+                datalabels: {
+                    color: '#2c3e50',
+                    font: {
+                        size: 12
+                    },
+                    formatter: (value) => `${value}\nмг`,
+                    textAlign: 'center',
+                    align: 'top',
+                    offset: 10
+                }
+            }
+        };
+        
+        const datalabelsOptions = {
+            plugins: {
+                datalabels: {
+                    color: '#2c3e50',
+                    font: {
+                        size: 12
+                    },
+                    anchor: 'end',
+                    align: (context) => {
+                         if (context.chart.canvas.id === 'weightLossChart' && context.dataIndex === 0) {
+                             return 'end';
+                         }
+                         return 'start';
+                    },
+                    offset: (context) => {
+                        if (context.chart.canvas.id === 'weightLossChart' && context.dataIndex === 0) {
+                            return 5;
+                        }
+                        return 10;
+                    },
+                    formatter: (value, context) => {
+                        let unit = '';
+                        if (context.chart.canvas.id === 'weightLossChart') {
+                            unit = 'кг';
+                        } else if (context.chart.canvas.id === 'hba1cChart' || context.chart.canvas.id === 'lipidChart' || context.chart.canvas.id === 'efficiencyChart') {
+                            unit = '%';
+                        } else {
+                            return value;
+                        }
+                        return `${value}\n${unit}`;
+                    },
+                    textAlign: 'center'
+                }
+            }
+        };
+
+        function drawChartsForActiveTab(targetId) {
+            const efficiencyData = {
+                labels: ['Нативный ГПП-1', 'Агонисты ГПП-1', 'Тирзепатид'],
+                datasets: [{ 
+                    label: 'Эффективность', 
+                    data: [100, 120, 85]
+                }]
+            };
+
+            const lipidData = {
+                labels: ['Триглицериды', 'Холестерин VLDL', 'Холестерин HDL'],
+                datasets: [{ 
+                    label: 'Изменение (%)', 
+                    data: [-24.8, -23.7, 7.1]
+                }]
+            };
+
+            const weightLossData = {
+                labels: ['Плацебо', 'Семаглутид 2.4 мг', 'Тирзепатид 5 мг', 'Тирзепатид 10 мг', 'Тирзепатид 15 мг'],
+                datasets: [{ 
+                    label: 'Потеря веса (кг)', 
+                    data: [2.4, 15, 16.5, 19.5, 22.4]
+                }]
+            };
+            
+            const hba1cData = {
+                labels: ['Метформин', 'Семаглутид 1 мг', 'Тирзепатид 5 мг', 'Тирзепатид 10 мг', 'Тирзепатид 15 мг'],
+                datasets: [{ 
+                    label: 'Снижение HbA1c (%)', 
+                    data: [1.0, 1.8, 2.0, 2.2, 2.4]
+                }]
+            };
+
+            const dosageData = {
+                labels: ['1-4 нед', '5-8 нед', '9-12 нед', '13-16 нед', '17-20 нед', '21+ нед'],
+                datasets: [{
+                    label: 'Дозировка (мг)',
+                    data: [2.5, 5, 7.5, 10, 12.5, 15],
+                    fill: true,
+                    borderColor: '#3498db'
+                }]
+            };
+
+            switch(targetId) {
+                case '#section1':
+                    renderChart('efficiencyChart', 'bar', efficiencyData, { ...barChartOptions, plugins: { ...barChartOptions.plugins, ...datalabelsOptions.plugins, title: { text: 'Сравнение силы связывания с рецептором ГПП-1' } } });
+                    renderChart('lipidChart', 'bar', lipidData, { ...barChartOptions, plugins: { ...barChartOptions.plugins, ...datalabelsOptions.plugins, title: { text: 'Влияние Тирзепатида 15 мг на липидный профиль' } } });
+                    break;
+                case '#section2':
+                     renderChart('weightLossChart', 'bar', weightLossData, {
+                        ...barChartOptions,
+                        ...datalabelsOptions,
+                        plugins: {
+                            ...barChartOptions.plugins,
+                            ...datalabelsOptions.plugins,
+                            title: { text: 'Снижение массы тела за 72 недели' },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `Потеря веса: ${context.raw} кг`
+                                }
+                            }
+                        },
+                        scales: {
+                            ...barChartOptions.scales,
+                            y: {
+                                ...barChartOptions.scales.y,
+                                title: { display: true, text: 'Потеря веса (кг)', color: '#333' }
+                            }
+                        }
+                    });
+                    renderChart('hba1cChart', 'bar', hba1cData, { 
+                        ...barChartOptions,
+                        ...datalabelsOptions,
+                        plugins: {
+                            ...barChartOptions.plugins,
+                            ...datalabelsOptions.plugins,
+                            title: { text: 'Снижение уровня HbA1c (гликированного гемоглобина)' },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `Снижение HbA1c: ${context.raw}%`
+                                }
+                            }
+                        },
+                        scales: {
+                             ...barChartOptions.scales,
+                            y: {
+                                ...barChartOptions.scales.y,
+                                title: { display: true, text: 'Снижение HbA1c (%)', color: '#333' }
+                            }
+                        }
+                    });
+                    break;
+                case '#section4':
+                    renderChart('dosageChart', 'line', dosageData, dosageChartOptions);
+                    break;
+            }
+        }
+
+        navMenu.addEventListener('click', function(e) {
+            const clickedLink = e.target.closest('a.nav-link');
+            
+            if (!clickedLink) {
+                return;
+            }
+            
+            e.preventDefault();
+            const targetId = clickedLink.getAttribute('data-target');
+            
+            navMenu.querySelectorAll('.nav-link').forEach(item => item.classList.remove('active'));
+            tabPanels.forEach(panel => panel.classList.remove('active'));
+            
+            clickedLink.classList.add('active');
+            document.querySelector(targetId).classList.add('active');
+            drawChartsForActiveTab(targetId);
+        });
+        
+        drawChartsForActiveTab('#section1');
+    });
+    </script>
+</body>
+</html>
