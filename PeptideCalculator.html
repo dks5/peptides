@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Компактный Калькулятор Пептидов</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            background-image: linear-gradient(to top right, #e0e7ff, #f3f4f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 1rem;
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            padding: 1.25rem;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+        .form-select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #d1d5db;
+            border-radius: 5px;
+            outline: none;
+            margin-top: 0.25rem;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            background: #4f46e5;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            background: #4f46e5;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .result-card {
+            background-color: rgba(249, 250, 251, 0.8);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .result-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #E5E7EB; }
+        .result-item:last-child { border-bottom: none; }
+        .result-label { color: #4B5563; font-size: 0.875rem; }
+        .result-value { font-weight: 600; color: #1F2937; text-align: right; font-size: 0.875rem; }
+        .solvent-recommendation { background-color: #e0e7ff; color: #3730a3; padding: 0.75rem; border-radius: 8px; text-align: center; font-weight: 500; font-size: 0.875rem; }
+        .icon { width: 1.125rem; height: 1.125rem; color: #4f46e5; flex-shrink: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <div class="text-center mb-4">
+                 <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Калькулятор Пептидов</h1>
+                <p class="text-gray-500 mt-1 text-sm">Расчет дозировки и растворителя</p>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label for="peptide-select" class="form-label">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                        <span>Выберите пептид</span>
+                    </label>
+                    <select id="peptide-select" class="form-select">
+                        <option value="custom">-- Другой пептид --</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="peptide-amount-slider" class="form-label">
+                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75m18.75-15.75c-2.203.31-4.436.465-6.75.465s-4.547-.155-6.75-.465m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.153.542c-1.12.232-2.27.367-3.45.435m-8.136-11.228L3.37 16.121c-.483.174-.711.704-.589 1.202.124.504.628.84 1.176.734a5.986 5.986 0 012.153-.542c1.12-.232 2.27-.367 3.45-.435m0 0l2.62 10.726m0 0l2.62-10.726M12 20.25V4.5" /></svg>
+                        <span>Количество пептида</span>
+                        <span id="peptide-amount-value" class="font-bold text-indigo-600 ml-auto">5 мг</span>
+                    </label>
+                    <input type="range" id="peptide-amount-slider" min="1" max="50" step="1" value="5">
+                </div>
+
+                <div>
+                    <label for="solvent-volume-slider" class="form-label">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                        <span>Объем растворителя</span>
+                         <span id="solvent-volume-value" class="font-bold text-indigo-600 ml-auto">2.0 мл</span>
+                    </label>
+                    <input type="range" id="solvent-volume-slider" min="0.5" max="10" step="0.1" value="2">
+                </div>
+            </div>
+
+            <div id="results" class="result-card">
+                <div id="solvent-info" class="solvent-recommendation mb-2"></div>
+                <div>
+                    <div class="result-item">
+                        <span class="result-label">Концентрация</span>
+                        <span id="concentration" class="result-value"></span>
+                    </div>
+                     <div class="result-item">
+                        <span class="result-label">Доза в 1 ед. шприца U-100</span>
+                        <span id="dose-per-unit" class="result-value"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const peptideData = {
+                "CJC-1295 (с/без DAC)": { solvent: "Бактериостатическая вода" },
+                "AOD-9604": { solvent: "Бактериостатическая вода" },
+                "Adipotide": { solvent: "Изотонический раствор NaCl или Бактериостатическая вода" },
+                "ARA-290": { solvent: "Фосфатно-буферный раствор (pH 6.5) с 1% сахарозой и 4% D-маннитолом" },
+                "Ipamorelin": { solvent: "Бактериостатическая вода" },
+                "Tesorlin": { solvent: "Бактериостатическая вода" },
+                "5-Amino-1MQ": { solvent: "Бактериостатическая вода или изотонический NaCl" },
+                "Epobois": { solvent: "Фосфатно-буферный раствор (pH 6.5) или Бактериостатическая вода" },
+                "PE-22-28": { solvent: "Бактериостатическая вода" },
+                "P-21": { solvent: "Бактериостатическая вода" },
+                "Selank": { solvent: "Бактериостатическая вода или изотонический NaCl" },
+                "Oxytocin": { solvent: "Изотонический раствор NaCl" },
+                "Semax": { solvent: "Бактериостатическая вода" },
+                "Тималин/Виадонин": { solvent: "Бактериостатическая вода или изотонический NaCl" }
+            };
+
+            const peptideSelect = document.getElementById('peptide-select');
+            const peptideAmountSlider = document.getElementById('peptide-amount-slider');
+            const peptideAmountValue = document.getElementById('peptide-amount-value');
+            const solventVolumeSlider = document.getElementById('solvent-volume-slider');
+            const solventVolumeValue = document.getElementById('solvent-volume-value');
+            const resultsDiv = document.getElementById('results');
+            const solventInfoDiv = document.getElementById('solvent-info');
+            const concentrationSpan = document.getElementById('concentration');
+            const dosePerUnitSpan = document.getElementById('dose-per-unit');
+
+            function populatePeptides() {
+                Object.keys(peptideData).sort().forEach(peptide => {
+                    const option = document.createElement('option');
+                    option.value = peptide;
+                    option.textContent = peptide;
+                    peptideSelect.appendChild(option);
+                });
+            }
+
+            function calculate() {
+                const peptideAmountMg = parseFloat(peptideAmountSlider.value);
+                const solventVolumeMl = parseFloat(solventVolumeSlider.value);
+                const selectedPeptide = peptideSelect.value;
+                
+                if (isNaN(peptideAmountMg) || isNaN(solventVolumeMl) || peptideAmountMg <= 0 || solventVolumeMl <= 0) {
+                    resultsDiv.classList.remove('visible');
+                    return;
+                }
+                
+                resultsDiv.classList.add('visible');
+
+                const peptideAmountMcg = peptideAmountMg * 1000;
+                const concentrationMgMl = (peptideAmountMg / solventVolumeMl).toFixed(2);
+                const dosePerUnitMcg = (peptideAmountMcg / solventVolumeMl) / 100;
+
+                concentrationSpan.textContent = `${concentrationMgMl} мг/мл`;
+                dosePerUnitSpan.textContent = `${dosePerUnitMcg.toFixed(2)} мкг`;
+
+                if (selectedPeptide !== 'custom' && peptideData[selectedPeptide]) {
+                    solventInfoDiv.innerHTML = `💡 <strong>Растворитель:</strong> ${peptideData[selectedPeptide].solvent}`;
+                } else {
+                    solventInfoDiv.innerHTML = `💡 <strong>Растворитель:</strong> Бактериостатическая вода (стандарт).`;
+                }
+            }
+            
+            peptideAmountSlider.addEventListener('input', (e) => {
+                peptideAmountValue.textContent = `${e.target.value} мг`;
+                calculate();
+            });
+
+            solventVolumeSlider.addEventListener('input', (e) => {
+                solventVolumeValue.textContent = `${parseFloat(e.target.value).toFixed(1)} мл`;
+                calculate();
+            });
+            
+            peptideSelect.addEventListener('change', calculate);
+
+            populatePeptides();
+            calculate();
+        });
+    </script>
+</body>
+</html>
+
