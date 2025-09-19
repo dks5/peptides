@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пептиды и БАДы в Спорте: Детальное Руководство</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .container {
+            max-width: 100%;
+            overflow-x: hidden;
+            padding: 1rem;
+        }
+        h1, h2, h3 {
+            color: #004085;
+            text-align: center;
+            font-weight: 700;
+        }
+        header {
+            background: linear-gradient(to right, #004085, #007bff);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+        }
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            background-color: white;
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .tab-button {
+            padding: 0.75rem 1rem;
+            margin: 0.25rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+        }
+        .tab-button.active {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-color: #007bff;
+        }
+        .tab-button:hover:not(.active) {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        .tab-content {
+            display: none;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .responsive-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .data-table {
+            min-width: 600px;
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9em;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: 700;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .card {
+            background-color: #ffffff;
+            border-left: 5px solid #007bff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 1.25em;
+            font-weight: 600;
+            text-align: left;
+        }
+        .card p, .card li {
+            font-size: 0.9em;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+        .note {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            font-size: 0.9em;
+            border: 1px solid #ffeeba;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .peptide-tooltip {
+            position: absolute;
+            background-color: #004085;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8em;
+            z-index: 100;
+            white-space: nowrap;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+            display: none;
+            max-width: 250px;
+            white-space: normal;
+        }
+        .peptide-name {
+            cursor: pointer;
+            border-bottom: 1px dashed #007bff;
+        }
+        .explanation-text {
+            display: block;
+            font-size: 0.8em;
+            color: #007bff;
+            font-style: italic;
+            margin-top: 0.25rem;
+        }
+        .synergy-block {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background-color: #f7f9fa;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .synergy-block .synergy-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 0.5rem;
+        }
+        .synergy-block .synergy-item-text {
+            font-weight: 600;
+            font-size: 0.85em;
+            color: #1a202c;
+            line-height: 1.2;
+        }
+        .synergy-block .synergy-icon {
+            font-size: 1.5em;
+            color: #007bff;
+            margin: 0 0.25rem;
+        }
+        .block-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            background-color: #f0f4f7;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+        .block-tab-button {
+            padding: 0.5rem 0.75rem;
+            margin: 0.25rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            background-color: transparent;
+            border: 1px solid #d1d5db;
+        }
+        .block-tab-button.active {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-color: #007bff;
+        }
+        .block-tab-content {
+            display: none;
+        }
+        .block-tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<div class="container mx-auto p-4 md:p-8">
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-blue-900 to-blue-500 text-white p-4 text-center rounded-2xl shadow-lg mb-6">
+        <h1 class="font-extrabold text-3xl md:text-4xl text-white">Пептиды и БАДы в Спорте</h1>
+        <p class="mt-2 text-sm md:text-base opacity-90">Детальное руководство по применению и синергии</p>
+    </header>
+
+    <!-- Tabs for navigation -->
+    <div class="tabs">
+        <button class="tab-button active" data-tab="tab1">Силовые спортсмены</button>
+        <button class="tab-button" data-tab="tab2">Женщины и 50+</button>
+        <button class="tab-button" data-tab="tab3">Синергия с БАДами</button>
+        <button class="tab-button" data-tab="tab4">Доп. добавки</button>
+        <button class="tab-button" data-tab="tab5">Электролиты и ГР</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div id="tab1" class="tab-content active">
+        <h2 class="text-xl md:text-2xl font-semibold mb-4">Схемы Пептидов для Силовых Спортсменов (Бодибилдеры)</h2>
+        <p class="mb-4 text-sm md:text-base">
+            Эта вкладка содержит детальную информацию о рекомендованных пептидах для силовых атлетов, с акцентом на подготовку к соревнованиям и восстановление. Обратите внимание на точные дозировки и способы введения, чтобы максимизировать эффект от каждого курса.
+        </p>
+        <div class="responsive-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Пептид</th>
+                        <th>Подготовка (Дозировка/Способ)</th>
+                        <th>Восстановление (Дозировка/Способ)</th>
+                        <th>Примечание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="peptide-name" data-peptide="Epithalon">Epithalon</td>
+                        <td>
+                            10 мг п/к - 10 дней утро (за месяц до соревнований)
+                            <span class="explanation-text">Схема для улучшения выносливости перед стартом.</span>
+                        </td>
+                        <td>
+                            Спрей по 1 дозе нозально за 2 часа до сна
+                            <span class="explanation-text">Схема для нормализации сна и регенерации.</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="CJC1295 DAC">CJC1295 DAC</td>
+                        <td>
+                            1 мг п/к в неделю; 4 мг в неделю (2 мг Пн, 2 мг Чт)
+                            <span class="explanation-text">Курс для набора массы и увеличения силы.</span>
+                        </td>
+                        <td>
+                            После тренировки или перед сном
+                            <span class="explanation-text">Способствует ночной регенерации.</span>
+                        </td>
+                        <td>Курс 12-16 недель</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="Ipamorelin">Ipamorelin</td>
+                        <td>
+                            100-200 мкг п/к 2 раза в день ежедневно
+                            <span class="explanation-text">Стимулирует рост мышц и сжигание жира.</span>
+                        </td>
+                        <td>
+                            -
+                            <span class="explanation-text">Для этого пептида акцент делается на этапе подготовки.</span>
+                        </td>
+                        <td>Курс 8-12 недель</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="MOTS-S + SS 31">MOTS-S + SS 31</td>
+                        <td>
+                            MOTS-S: 5 мг (2 раза в неделю) + SS 31: 30 мг ежедневно п/к
+                            <span class="explanation-text">Повышает энергетический обмен и выносливость.</span>
+                        </td>
+                        <td>
+                            -
+                            <span class="explanation-text">Сфокусирован на подготовке.</span>
+                        </td>
+                        <td>MOTS-S до 4 нед; SS-31: 10 дней до соревнований</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="5-Amino-IMQ (NNMTI)">5-Amino-IMQ (NNMTI) 50 мг</td>
+                        <td>
+                            По 1 таб 1 раз в день (в течении месяца до соревнований)
+                            <span class="explanation-text">Помогает бороться с жиром на финальном этапе.</span>
+                        </td>
+                        <td>
+                            По 1 таб 1 раз в день (месяц после)
+                            <span class="explanation-text">Поддерживает метаболизм после соревнований.</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="ADAMAX">ADAMAX спрей</td>
+                        <td>
+                            По 1-2 прыска
+                            <span class="explanation-text">Улучшает концентрацию и ментальную ясность.</span>
+                        </td>
+                        <td>
+                            По 1-2 прыска
+                            <span class="explanation-text">Поддерживает восстановление нервной системы.</span>
+                        </td>
+                        <td>До 2 мес</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="BPC-157 + TB 500">BPC-157 + TB 500</td>
+                        <td>
+                            BPC 157 500 мкг; TB 500 1 мг п/к
+                            <span class="explanation-text">Схема для профилактики и лечения травм.</span>
+                        </td>
+                        <td>
+                            -
+                            <span class="explanation-text">Обычно применяется на этапе подготовки, но также эффективен для восстановления.</span>
+                        </td>
+                        <td>Схема 5/2 (с понедельника по пятницу)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab2" class="tab-content">
+        <h2 class="text-xl md:text-2xl font-semibold mb-4">Схемы Пептидов для Женщин и Спортсменов (50+)</h2>
+        <p class="mb-4 text-sm md:text-base">
+            Здесь вы найдете специализированные рекомендации по пептидам для женщин и спортсменов старше 50 лет. Эти схемы учитывают особенности организма и нацелены на безопасное повышение выносливости, восстановление и общее омоложение.
+        </p>
+        <div class="responsive-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Группа / Пептид</th>
+                        <th>Подготовка (Дозировка/Способ)</th>
+                        <th>Восстановление (Дозировка/Способ)</th>
+                        <th>Примечание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="4" class="bg-blue-100 font-bold text-center">СПОРТСМЕНЫ ЖЕНЩИНЫ</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="Epithalon">Epithalon + Dzip + Ipamorelin</td>
+                        <td>
+                            Спрей по 1 дозе нозально за 2 часа до сна
+                            <span class="explanation-text">Схема для омоложения и улучшения общего состояния.</span>
+                        </td>
+                        <td>
+                            Спрей по 1 дозе нозально за 2 часа до сна
+                            <span class="explanation-text">Поддержание гормонального фона и регенерации.</span>
+                        </td>
+                        <td>Курс 12 нед</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="CJC1295 DAC">CJC1295 DAC</td>
+                        <td>
+                            1 мг п/к в неделю
+                            <span class="explanation-text">Для постепенного набора мышечной массы.</span>
+                        </td>
+                        <td>
+                            Перед сном
+                            <span class="explanation-text">Усиливает ночное восстановление.</span>
+                        </td>
+                        <td>Курс 12 недель</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="MOTC-S">MOTC-S</td>
+                        <td>
+                            5 мг (3 раза в неделю) п/к
+                            <span class="explanation-text">Для повышения клеточной энергии.</span>
+                        </td>
+                        <td>
+                            -
+                            <span class="explanation-text">Сфокусирован на подготовке.</span>
+                        </td>
+                        <td>MOTS-S до 4 нед</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="Slu-pp-332">Slu-pp-332 5 мг</td>
+                        <td>
+                            По 1 таб 2 раза в день (в течении месяца до соревнований)
+                            <span class="explanation-text">Для снижения жировой массы.</span>
+                        </td>
+                        <td>
+                            По 1 таб 2 раза в день (месяц после)
+                            <span class="explanation-text">Продолжение жиросжигания.</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="Kisspeptin">Kisspeptin спрей, Oxytocin спрей, Glow</td>
+                        <td>
+                            По 1-2 пшику
+                            <span class="explanation-text">Для нормализации гормонального фона.</span>
+                        </td>
+                        <td>
+                            По 1-2 пшику
+                            <span class="explanation-text">Поддержание гормонального баланса.</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="bg-blue-100 font-bold text-center">СПОРТСМЕНЫ (50+)</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="Epithalon">Epithalon</td>
+                        <td>
+                            Спрей по 1 дозе нозально за 2 часа до сна
+                            <span class="explanation-text">Для регуляции циркадных ритмов.</span>
+                        </td>
+                        <td>
+                            Спрей по 1 дозе нозально за 2 часа до сна
+                            <span class="explanation-text">Улучшает сон и омоложение.</span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="Ipamorelin">Ipamorelin</td>
+                        <td>
+                            100-200 мкг п/к ежедневно 2-3 раза в день
+                            <span class="explanation-text">Для омоложения и повышения ГР.</span>
+                        </td>
+                        <td>
+                            -
+                            <span class="explanation-text">Фокус на омоложении и восстановлении.</span>
+                        </td>
+                        <td>Курс 8-12 недель на ночь</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="Humanin">Humanin</td>
+                        <td>
+                            200 мкг п/к
+                            <span class="explanation-text">Защищает клетки и повышает выносливость.</span>
+                        </td>
+                        <td>
+                            -
+                            <span class="explanation-text">Применяется для защиты клеток.</span>
+                        </td>
+                        <td>8 недель, первая половина дня</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="Semax">Sеmах спрей</td>
+                        <td>
+                            По 1-2 прыска
+                            <span class="explanation-text">Для повышения концентрации.</span>
+                        </td>
+                        <td>
+                            -
+                            <span class="explanation-text">Фокус на ментальной активности.</span>
+                        </td>
+                        <td>До 2 мес</td>
+                    </tr>
+                    <tr>
+                        <td class="peptide-name" data-peptide="BPC-157 + TB 500">BPC-157 + TB 500</td>
+                        <td>
+                            BPC 157 500 мкг; TB 1 мг п/к
+                            <span class="explanation-text">Для профилактики возрастных травм.</span>
+                        </td>
+                        <td>
+                            -
+                            <span class="explanation-text">Может быть использован для заживления после нагрузок.</span>
+                        </td>
+                        <td>Схема 5/2 (с понедельника по пятницу)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab3" class="tab-content">
+        <h2 class="text-xl md:text-2xl font-semibold mb-4">Синергия: Пептиды и БАДы</h2>
+        <p class="mb-4 text-sm md:text-base">
+            Эта вкладка раскрывает ключевую идею синергии между пептидами и пищевыми добавками. Правильное сочетание позволяет усилить эффект от обоих, ускоряя восстановление, рост мышц и достижение спортивных целей.
+        </p>
+
+        <div class="block-tabs">
+            <button class="block-tab-button active" data-tab-id="tab3" data-block-id="block3-1">Протеины и Аминокислоты</button>
+            <button class="block-tab-button" data-tab-id="tab3" data-block-id="block3-2">Дополнительные БАДы</button>
+        </div>
+
+        <div id="block3-1" class="block-tab-content active">
+            <div class="card">
+                <h3>Протеины и Аминокислоты</h3>
+                <p><strong>Сывороточный протеин:</strong> Быстро усваивается, идеален для <strong>восстановления сразу после тренировки</strong>. Сочетается с пептидами, принятыми сразу после тренировки, чтобы обеспечить мышцы необходимыми аминокислотами.</p>
+                <ul>
+                    <li><strong>Рекомендация:</strong> Для быстрого усвоения принимайте с 30-40 г высокоусвояемых углеводов.</li>
+                    <li>Дозировка: <strong>20-30 г</strong> в течение 30 минут после тренировки.</li>
+                </ul>
+                <p><strong>Казеиновый белок:</strong> Медленное усвоение, обеспечивает постоянный приток аминокислот ночью. Эффективен с <strong>CJC-1295, CJC-1295 DAC и Ипаморелином</strong> для максимального ночного восстановления.</p>
+                <ul>
+                    <li><strong>Рекомендация:</strong> Используйте мицеллярный казеин для лучшей биодоступности.</li>
+                    <li>Дозировка: <strong>25-40 г</strong> перед сном.</li>
+                </ul>
+                <p><strong>BCAA и EAAs:</strong> Стимулируют синтез мышечного белка (<strong>MTOR</strong>). Можно комбинировать с ГР высвобождающими пептидами, такими как <strong>Ипаморелин</strong>, во время голодания, чтобы предотвратить мышечный катаболизм.</p>
+                <ul>
+                    <li>Дозировка EAA: <strong>10-15 г</strong> до или после тренировки.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="block3-2" class="block-tab-content">
+            <div class="card">
+                <h3>Дополнительные БАДы</h3>
+                <p><strong>Креатин:</strong> Способствует росту мышечной массы и увеличивает силу. Дополняет пептиды, нацеленные на рост и восстановление. Синергический эффект с <strong>пептидами гормона роста</strong> помогает быстрее достичь гипертрофии.</p>
+                <ul>
+                    <li>Поддерживающая доза: <strong>5-10 г в день</strong>. Принимайте после тренировки с углеводной пищей.</li>
+                </ul>
+                <p><strong>Омега-3:</strong> Обладают сильным противовоспалительным эффектом, что критически важно для восстановления после интенсивных тренировок. Дополняет восстановление тканей, способствуя уменьшению мышечной боли.</p>
+                <ul>
+                    <li>Дозировка: <strong>4-5 г</strong> (2,4 ЭПК/1,6 ДГК) на этапе тренировок.</li>
+                </ul>
+                <p><strong>Коллагеновые пептиды:</strong> Восстанавливают соединительную ткань (сухожилия, связки). Сочетание с <strong>ВРС-157 и ТВ-500</strong>, которые восстанавливают сосуды и сухожилия, значительно улучшает восстановление и предотвращает травмы.</p>
+                <ul>
+                    <li>Реабилитация: <strong>25 г в день</strong> (делится на 2 порции).</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="tab4" class="tab-content">
+        <h2 class="text-xl md:text-2xl font-semibold mb-4">Дополнительные Добавки</h2>
+        <p class="mb-4 text-sm md:text-base">
+            Эта вкладка посвящена добавкам, которые помогают оптимизировать другие аспекты спортивной деятельности: сжигание жира, ментальную концентрацию и общее восстановление.
+        </p>
+
+        <div class="block-tabs">
+            <button class="block-tab-button active" data-tab-id="tab4" data-block-id="block4-1">Сжигатели Жира</button>
+            <button class="block-tab-button" data-tab-id="tab4" data-block-id="block4-2">Усилители Восстановления</button>
+            <button class="block-tab-button" data-tab-id="tab4" data-block-id="block4-3">Ноотропы</button>
+            <button class="block-tab-button" data-tab-id="tab4" data-block-id="block4-4">Сенсибилизаторы Инсулина</button>
+        </div>
+
+        <div id="block4-1" class="block-tab-content active">
+            <div class="card">
+                <h3>Сжигатели Жира</h3>
+                <p>
+                    <img src="https://raw.githubusercontent.com/dks/peptides/main/Fat-Burners-1.png" alt="Сжигатели жира, общая информация" class="w-full h-auto rounded-lg shadow-md mb-4"/>
+                    Первое изображение наглядно показывает основные типы сжигателей жира, их действие и как они работают в синергии с пептидами. Это обеспечивает комплексный подход к достижению рельефа.
+                </p>
+                <p>
+                    <img src="https://raw.githubusercontent.com/dks/peptides/main/Fat-Burners-2.png" alt="Синергия пептидов и термогеников" class="w-full h-auto rounded-lg shadow-md mb-4"/>
+                    Второе изображение демонстрирует синергический эффект комбинации пептидов и термогеников, объясняя, как они вместе повышают метаболизм и ускоряют жиросжигание.
+                </p>
+                <p>
+                    <img src="https://raw.githubusercontent.com/dks/peptides/main/Fat-Burners-3.png" alt="Ключевые преимущества жиросжигателей" class="w-full h-auto rounded-lg shadow-md mb-4"/>
+                    Третье изображение фокусируется на ключевых преимуществах от использования жиросжигателей, таких как улучшение выносливости и оптимизация метаболизма.
+                </p>
+                <p>
+                    <img src="https://raw.githubusercontent.com/dks/peptides/main/Fat-Burners-4.png" alt="Практическая комбинация пептидов и L-карнитина" class="w-full h-auto rounded-lg shadow-md mb-4"/>
+                    Наконец, четвертое изображение представляет практическую схему сочетания пептидов и L-карнитина, детализируя их совместное действие для эффективной борьбы с жиром.
+                </p>
+                <!-- <img src="https://raw.githubusercontent.com/dks/peptides/main/Fat-Burners-1.png" alt="Изображение" class="w-full h-auto rounded-lg shadow-md"/> -->
+            </div>
+        </div>
+
+        <div id="block4-2" class="block-tab-content">
+            <div class="card">
+                <h3>Усилители Восстановления</h3>
+                <div class="synergy-block">
+                    <div class="synergy-item">
+                        <span class="synergy-item-text">L-Глютамин</span>
+                    </div>
+                    <span class="synergy-icon">+</span>
+                    <div class="synergy-item">
+                        <span class="synergy-item-text">BPC-157</span>
+                    </div>
+                    <span class="synergy-icon">→</span>
+                    <div class="synergy-item">
+                        <span class="synergy-item-text">Ускоренная регенерация клеток</span>
+                    </div>
+                </div>
+                <p><strong>Усилители восстановления</strong> (Витамины С, Е, L-глютамин) смягчают окислительный стресс, вызванный тренировками. <strong>L-глютамин</strong> является основной аминокислотой для иммунной системы и восстановления кишечника. В сочетании с **BPC-157**, который способствует заживлению тканей и сосудов, они создают мощный синергический эффект, ускоряя регенерацию и снижая риск воспалений.</p>
+                <ul>
+                    <li>Витамин С: <strong>500-1000 мг</strong> в день.</li>
+                    <li>L-глютамин: <strong>5-10 г</strong> в день.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="block4-3" class="block-tab-content">
+            <div class="card">
+                <h3>Ноотропы</h3>
+                <div class="synergy-block">
+                    <div class="synergy-item">
+                        <span class="synergy-item-text">Ноотропы</span>
+                    </div>
+                    <span class="synergy-icon">+</span>
+                    <div class="synergy-item">
+                        <span class="synergy-item-text">Энергетические пептиды</span>
+                    </div>
+                    <span class="synergy-icon">→</span>
+                    <div class="synergy-item">
+                        <span class="synergy-item-text">Высокая концентрация<br>+ Увеличение интенсивности</span>
+                    </div>
+                </div>
+                <p><strong>Ноотропы</strong> (Альфа-GPC, Львиная грива, ADAMAX) оптимизируют концентрацию внимания и ментальную ясность, воздействуя на нервную систему. **Энергетические пептиды** (MOTS-S, SS-31) повышают выносливость на клеточном уровне, улучшая работу митохондрий. Вместе они обеспечивают сфокусированность, необходимую для интенсивной тренировки, а также энергию для её поддержания.</p>
+                <ul>
+                    <li>Альфа GPC: <strong>300-600 мг</strong> перед тренировкой.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="block4-4" class="block-tab-content">
+            <div class="card">
+                <h3>Сенсибилизаторы Инсулина</h3>
+                <div class="synergy-block">
+                    <div class="synergy-item">
+                        <span class="synergy-item-text">Берберин</span>
+                    </div>
+                    <span class="synergy-icon">+</span>
+                    <div class="synergy-item">
+                        <span class="synergy-item-text">Ипаморелин</span>
+                    </div>
+                    <span class="synergy-icon">→</span>
+                    <div class="synergy-item">
+                        <span class="synergy-item-text">Оптимальное усвоение<br>питательных веществ</span>
+                    </div>
+                </div>
+                <p><strong>Сенсибилизаторы инсулина</strong> (Берберин, Экстракт корицы) повышают чувствительность клеток к инсулину. Это помогает организму более эффективно использовать глюкозу, полученную из пищи. **Ипаморелин** и другие пептиды гормона роста также способствуют лучшему усвоению питательных веществ. Эта комбинация оптимизирует распределение энергии и способствует росту мышц без накопления жира.</p>
+                <ul>
+                    <li>Берберин: <strong>500 мг</strong> 2-3 раза в день.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab5" class="tab-content">
+        <h2 class="text-xl md:text-2xl font-semibold mb-4">Электролиты и Примечания к Гормону Роста</h2>
+        <p class="mb-4 text-sm md:text-base">
+            В этой вкладке вы найдете информацию о важности электролитов и ключевые примечания по использованию Гормона Роста (ГР), включая противопоказания и необходимость лабораторного контроля.
+        </p>
+        <div class="responsive-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Группа / Направление</th>
+                        <th>Рекомендуемая дозировка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Общие электролиты (суточная доза)</strong></td>
+                        <td>
+                            <ul>
+                                <li>Натрий: <strong>500 мг</strong></li>
+                                <li>Калий: <strong>300-500 мг</strong></li>
+                                <li>Магний: <strong>200-400 мг</strong></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Спортсмены на выносливость (день гонки)</strong></td>
+                        <td>
+                            <ul>
+                                <li>Натрий: <strong>700-1000 мг</strong> в час</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="note mt-6">
+            <h3 class="font-bold text-center">Важное Примечание к Гормону Роста (ГР)</h3>
+            <p>Гормон роста — это мощный инструмент, и его использование требует осторожности. Обязательно следуйте этим рекомендациям для безопасности:</p>
+            <ul class="list-disc ml-5 mt-2">
+                <li>Во время инъекций ГР необходимо <strong>отслеживать Саматотропный гормон в крови</strong> с помощью лабораторных анализов.</li>
+                <li>При низких показаниях дозы могут быть увеличены, но только под контролем анализа крови.</li>
+                <li><strong>Противопоказания</strong> при приеме ГР: злокачественные заболевания, тяжелые сердечно-сосудистые заболевания, беременность.</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('.tab-button');
+        const contents = document.querySelectorAll('.tab-content');
+        const peptideNames = document.querySelectorAll('.peptide-name');
+        
+        const peptideData = {
+            "Epithalon": {
+                group: "Пептиды",
+                action: "Регулирует циркадные ритмы и клеточное обновление.",
+                purpose: "Общее омоложение, регуляция сна, увеличение выносливости."
+            },
+            "CJC1295 DAC": {
+                group: "Пептиды гормона роста",
+                action: "Длительная стимуляция выработки гормона роста (ГР).",
+                purpose: "Набор мышечной массы, сжигание жира, улучшение восстановления."
+            },
+            "Ipamorelin": {
+                group: "Пептиды гормона роста",
+                action: "Стимулирует выработку ГР без побочных эффектов (повышение кортизола).",
+                purpose: "Улучшение качества сна, ускорение восстановления, рост мышц."
+            },
+            "MOTS-S + SS 31": {
+                group: "Митохондриальные пептиды",
+                action: "Регулирует метаболизм и улучшает работу митохондрий.",
+                purpose: "Увеличение выносливости, повышение энергетического обмена."
+            },
+            "5-Amino-IMQ (NNMTI)": {
+                group: "Ингибиторы NNMT",
+                action: "Ускоряет метаболизм жиров, блокируя фермент NNMT.",
+                purpose: "Эффективная борьба с лишним весом, жиросжигание."
+            },
+            "ADAMAX": {
+                group: "Ноотропные пептиды",
+                action: "Стимулирует мозговую активность и улучшает когнитивные функции.",
+                purpose: "Улучшение концентрации, повышение работоспособности, снятие стресса."
+            },
+            "BPC-157 + TB 500": {
+                group: "Пептиды-репаранты",
+                action: "Комплексное восстановление тканей, заживление травм и ран.",
+                purpose: "Быстрое восстановление после травм, заживление суставов и связок."
+            },
+            "MOTC-S": {
+                group: "Митохондриальные пептиды",
+                action: "Улучшает обмен веществ и повышает выносливость на клеточном уровне.",
+                purpose: "Усиление энергетического обмена, снижение усталости."
+            },
+            "Slu-pp-332": {
+                group: "Ингибиторы",
+                action: "Направленно снижает уровень жировой ткани.",
+                purpose: "Жиросжигание и улучшение композиции тела."
+            },
+            "Kisspeptin": {
+                group: "Гормональные пептиды",
+                action: "Регулирует репродуктивную функцию и улучшает гормональный фон.",
+                purpose: "Общее омоложение и гормональная регуляция у женщин."
+            },
+            "Humanin": {
+                group: "Митохондриальные пептиды",
+                action: "Защищает клетки от повреждений и апоптоза.",
+                purpose: "Антивозрастное действие, защита от клеточного старения."
+            },
+            "Semax": {
+                group: "Ноотропные пептиды",
+                action: "Улучшает память, внимание и умственную работоспособность.",
+                purpose: "Повышение умственной активности, снижение стресса."
+            }
+        };
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetId = tab.dataset.tab;
+
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                contents.forEach(content => {
+                    if (content.id === targetId) {
+                        content.classList.add('active');
+                    } else {
+                        content.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        const handleBlockTabs = (containerId) => {
+            const container = document.getElementById(containerId);
+            const blockButtons = container.querySelectorAll('.block-tab-button');
+            const blockContents = container.querySelectorAll('.block-tab-content');
+
+            blockButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const blockId = button.dataset.blockId;
+                    
+                    blockButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    blockContents.forEach(content => {
+                        if (content.id === blockId) {
+                            content.classList.add('active');
+                        } else {
+                            content.classList.remove('active');
+                        }
+                    });
+                });
+            });
+        };
+
+        handleBlockTabs('tab3');
+        handleBlockTabs('tab4');
+
+        peptideNames.forEach(cell => {
+            cell.addEventListener('mouseenter', (event) => {
+                const peptideKey = cell.dataset.peptide;
+                if (peptideData[peptideKey]) {
+                    const data = peptideData[peptideKey];
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'peptide-tooltip';
+                    tooltip.innerHTML = `
+                        <strong>Группа:</strong> ${data.group}<br>
+                        <strong>Действие:</strong> ${data.action}<br>
+                        <strong>Предназначение:</strong> ${data.purpose}
+                    `;
+                    document.body.appendChild(tooltip);
+
+                    const rect = cell.getBoundingClientRect();
+                    const tooltipWidth = tooltip.offsetWidth;
+                    const tooltipHeight = tooltip.offsetHeight;
+                    
+                    let top = rect.top + window.scrollY;
+                    let left = rect.right + window.scrollX + 10;
+
+                    if (left + tooltipWidth > window.innerWidth) {
+                        left = window.innerWidth - tooltipWidth - 10;
+                    }
+                    if (top + tooltipHeight > window.innerHeight + window.scrollY) {
+                        top = rect.top + window.scrollY - tooltipHeight - 10;
+                    }
+
+                    tooltip.style.top = `${top}px`;
+                    tooltip.style.left = `${left}px`;
+                    tooltip.style.display = 'block';
+                }
+            });
+
+            cell.addEventListener('mouseleave', () => {
+                const tooltip = document.querySelector('.peptide-tooltip');
+                if (tooltip) {
+                    tooltip.remove();
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
