@@ -42,10 +42,8 @@
             justify-content: center;
             flex-wrap: wrap;
             margin-bottom: 1.5rem;
-            background-color: white;
             padding: 0.5rem;
             border-radius: 12px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
         .tab-button {
             padding: 0.75rem 1rem;
@@ -53,18 +51,21 @@
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.3s ease-in-out;
             border: 1px solid transparent;
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .tab-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
         .tab-button.active {
             background-color: #007bff;
             color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             border-color: #007bff;
-        }
-        .tab-button:hover:not(.active) {
-            background-color: #e9ecef;
-            color: #495057;
+            transform: translateY(0);
         }
         .tab-content {
             display: none;
@@ -109,11 +110,18 @@
             margin-top: 1.5rem;
         }
         .card {
-            background-color: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
             border-left: 5px solid #007bff;
             border-radius: 8px;
             padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
         .card h3 {
             margin-top: 0;
@@ -173,28 +181,41 @@
             flex-wrap: wrap;
             margin-top: 1rem;
             margin-bottom: 1rem;
-            padding: 0.5rem;
-            background-color: #f7f9fa;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
+            transition: all 0.3s ease-in-out;
+        }
+        .synergy-block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
         .synergy-block .synergy-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0 0.5rem;
+            margin: 0 1rem;
         }
         .synergy-block .synergy-item-text {
             font-weight: 600;
-            font-size: 0.85em;
+            font-size: 0.95em;
             color: #1a202c;
             line-height: 1.2;
+            margin-top: 0.5rem;
         }
         .synergy-block .synergy-icon {
-            font-size: 1.5em;
+            font-size: 2em;
             color: #007bff;
             margin: 0 0.25rem;
+            display: flex;
+            align-items: center;
+        }
+        .synergy-block .synergy-icon span {
+            font-size: 1.5em;
         }
         .block-tabs {
             display: flex;
@@ -221,47 +242,8 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             border-color: #007bff;
         }
-        .block-tab-content {
-            display: none;
-        }
-        .block-tab-content.active {
-            display: block;
-        }
-
-        /* New styles for image layout */
-        .image-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-        .image-text-block {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            max-width: 300px;
-            text-align: center;
-        }
-        .image-text-block img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .image-text-block p {
-            margin-top: 0.5rem;
-            font-size: 0.9em;
-            color: #495057;
-        }
-        .image-with-text-wrap {
-            float: left;
-            width: 96px; /* w-24 */
-            height: auto;
-            margin-right: 16px; /* mr-4 */
-            margin-bottom: 8px; /* mb-2 */
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .clear-both {
+            clear: both;
         }
     </style>
 </head>
@@ -551,6 +533,22 @@
         <div id="block3-1" class="block-tab-content active">
             <div class="card">
                 <h3>Протеины и Аминокислоты</h3>
+                <div class="synergy-block">
+                    <div class="synergy-item">
+                        <span class="text-3xl">🥤</span>
+                        <span class="synergy-item-text">Протеин/Аминокислоты</span>
+                    </div>
+                    <span class="synergy-icon text-4xl leading-none">+</span>
+                    <div class="synergy-item">
+                        <span class="text-3xl">💉</span>
+                        <span class="synergy-item-text">Пептиды</span>
+                    </div>
+                    <span class="synergy-icon text-4xl leading-none">→</span>
+                    <div class="synergy-item">
+                        <span class="text-3xl">💪</span>
+                        <span class="synergy-item-text">Усиленный рост мышц</span>
+                    </div>
+                </div>
                 <p><strong>Сывороточный протеин:</strong> Быстро усваивается, идеален для <strong>восстановления сразу после тренировки</strong>. Сочетается с пептидами, принятыми сразу после тренировки, чтобы обеспечить мышцы необходимыми аминокислотами.</p>
                 <ul>
                     <li><strong>Рекомендация:</strong> Для быстрого усвоения принимайте с 30-40 г высокоусвояемых углеводов.</li>
@@ -571,14 +569,62 @@
         <div id="block3-2" class="block-tab-content">
             <div class="card">
                 <h3>Дополнительные БАДы</h3>
+                <div class="synergy-block">
+                    <div class="synergy-item">
+                        <span class="text-3xl">🏋️</span>
+                        <span class="synergy-item-text">Креатин</span>
+                    </div>
+                    <span class="synergy-icon text-4xl leading-none">+</span>
+                    <div class="synergy-item">
+                        <span class="text-3xl">💪</span>
+                        <span class="synergy-item-text">Пептиды ГР</span>
+                    </div>
+                    <span class="synergy-icon text-4xl leading-none">→</span>
+                    <div class="synergy-item">
+                        <span class="text-3xl">⚡</span>
+                        <span class="synergy-item-text">Гипертрофия мышц</span>
+                    </div>
+                </div>
                 <p><strong>Креатин:</strong> Способствует росту мышечной массы и увеличивает силу. Дополняет пептиды, нацеленные на рост и восстановление. Синергический эффект с <strong>пептидами гормона роста</strong> помогает быстрее достичь гипертрофии.</p>
                 <ul>
                     <li>Поддерживающая доза: <strong>5-10 г в день</strong>. Принимайте после тренировки с углеводной пищей.</li>
                 </ul>
+                <div class="synergy-block">
+                    <div class="synergy-item">
+                        <span class="text-3xl">💊</span>
+                        <span class="synergy-item-text">Омега-3</span>
+                    </div>
+                    <span class="synergy-icon text-4xl leading-none">+</span>
+                    <div class="synergy-item">
+                        <span class="text-3xl">💉</span>
+                        <span class="synergy-item-text">BPC-157</span>
+                    </div>
+                    <span class="synergy-icon text-4xl leading-none">→</span>
+                    <div class="synergy-item">
+                        <span class="text-3xl">❤️</span>
+                        <span class="synergy-item-text">Снижение воспалений</span>
+                    </div>
+                </div>
                 <p><strong>Омега-3:</strong> Обладают сильным противовоспалительным эффектом, что критически важно для восстановления после интенсивных тренировок. Дополняет восстановление тканей, способствуя уменьшению мышечной боли.</p>
                 <ul>
                     <li>Дозировка: <strong>4-5 г</strong> (2,4 ЭПК/1,6 ДГК) на этапе тренировок.</li>
                 </ul>
+                <div class="synergy-block">
+                    <div class="synergy-item">
+                        <span class="text-3xl">🦴</span>
+                        <span class="synergy-item-text">Коллаген</span>
+                    </div>
+                    <span class="synergy-icon text-4xl leading-none">+</span>
+                    <div class="synergy-item">
+                        <span class="text-3xl">🩹</span>
+                        <span class="synergy-item-text">BPC-157 / TB-500</span>
+                    </div>
+                    <span class="synergy-icon text-4xl leading-none">→</span>
+                    <div class="synergy-item">
+                        <span class="text-3xl">🏋️‍♀️</span>
+                        <span class="synergy-item-text">Восстановление суставов</span>
+                    </div>
+                </div>
                 <p><strong>Коллагеновые пептиды:</strong> Восстанавливают соединительную ткань (сухожилия, связки). Сочетание с <strong>ВРС-157 и ТВ-500</strong>, которые восстанавливают сосуды и сухожилия, значительно улучшает восстановление и предотвращает травмы.</p>
                 <ul>
                     <li>Реабилитация: <strong>25 г в день</strong> (делится на 2 порции).</li>
@@ -606,21 +652,21 @@
                 <h3>Сжигатели Жира</h3>
                 <div class="synergy-block">
                     <div class="synergy-item">
+                        <span class="text-3xl">🔥</span>
                         <span class="synergy-item-text">Термогеники</span>
                     </div>
-                    <span class="synergy-icon">+</span>
+                    <span class="synergy-icon text-4xl leading-none">+</span>
                     <div class="synergy-item">
+                        <span class="text-3xl">💉</span>
                         <span class="synergy-item-text">CJC-1295 / Ипаморелин</span>
                     </div>
-                    <span class="synergy-icon">→</span>
+                    <span class="synergy-icon text-4xl leading-none">→</span>
                     <div class="synergy-item">
-                        <span class="synergy-item-text">Усиленный метаболизм<br>+ Сжигание жира</span>
+                        <span class="text-3xl">⚡</span>
+                        <span class="synergy-item-text">Усиленный метаболизм</span>
+                        <span class="text-sm text-gray-500 font-normal"> + Сжигание жира</span>
                     </div>
                 </div>
-                <img src="https://raw.githubusercontent.com/dks5/peptides/main/Fat-Burners-1.png" alt="Сжигатели жира, общая информация" class="image-with-text-wrap" />
-                <img src="https://raw.githubusercontent.com/dks5/peptides/main/Fat-Burners-2.png" alt="Синергия пептидов и термогеников" class="image-with-text-wrap" />
-                <img src="https://raw.githubusercontent.com/dks5/peptides/main/Fat-Burners-3.png" alt="Ключевые преимущества жиросжигателей" class="image-with-text-wrap" />
-                <img src="https://raw.githubusercontent.com/dks5/peptides/main/Fat-Burners-4.png" alt="Практическая комбинация пептидов и L-карнитина" class="image-with-text-wrap" />
                 <p class="text-sm md:text-base">
                     Термогеники (Кофеин, Экстракт зеленого чая) усиливают эффект липолитических пептидов, таких как CJC-1295 и Ипаморелин, повышая метаболизм и способствуя сжиганию жира. Термогеники стимулируют высвобождение жирных кислот, а пептиды ГР помогают утилизировать их для получения энергии. Это обеспечивает двойной удар по жировым отложениям.
                     <br><br>
@@ -635,14 +681,17 @@
                 <h3>Усилители Восстановления</h3>
                 <div class="synergy-block">
                     <div class="synergy-item">
+                        <span class="text-3xl">💊</span>
                         <span class="synergy-item-text">L-Глютамин</span>
                     </div>
-                    <span class="synergy-icon">+</span>
+                    <span class="synergy-icon text-4xl leading-none">+</span>
                     <div class="synergy-item">
+                        <span class="text-3xl">🩹</span>
                         <span class="synergy-item-text">BPC-157</span>
                     </div>
-                    <span class="synergy-icon">→</span>
+                    <span class="synergy-icon text-4xl leading-none">→</span>
                     <div class="synergy-item">
+                        <span class="text-3xl">🚀</span>
                         <span class="synergy-item-text">Ускоренная регенерация клеток</span>
                     </div>
                 </div>
@@ -659,14 +708,17 @@
                 <h3>Ноотропы</h3>
                 <div class="synergy-block">
                     <div class="synergy-item">
+                        <span class="text-3xl">🧠</span>
                         <span class="synergy-item-text">Ноотропы</span>
                     </div>
-                    <span class="synergy-icon">+</span>
+                    <span class="synergy-icon text-4xl leading-none">+</span>
                     <div class="synergy-item">
+                        <span class="text-3xl">⚡</span>
                         <span class="synergy-item-text">Энергетические пептиды</span>
                     </div>
-                    <span class="synergy-icon">→</span>
+                    <span class="synergy-icon text-4xl leading-none">→</span>
                     <div class="synergy-item">
+                        <span class="text-3xl">🎯</span>
                         <span class="synergy-item-text">Высокая концентрация<br>+ Увеличение интенсивности</span>
                     </div>
                 </div>
@@ -682,14 +734,17 @@
                 <h3>Сенсибилизаторы Инсулина</h3>
                 <div class="synergy-block">
                     <div class="synergy-item">
+                        <span class="text-3xl">🌿</span>
                         <span class="synergy-item-text">Берберин</span>
                     </div>
-                    <span class="synergy-icon">+</span>
+                    <span class="synergy-icon text-4xl leading-none">+</span>
                     <div class="synergy-item">
+                        <span class="text-3xl">💉</span>
                         <span class="synergy-item-text">Ипаморелин</span>
                     </div>
-                    <span class="synergy-icon">→</span>
+                    <span class="synergy-icon text-4xl leading-none">→</span>
                     <div class="synergy-item">
+                        <span class="text-3xl">🍽️</span>
                         <span class="synergy-item-text">Оптимальное усвоение<br>питательных веществ</span>
                     </div>
                 </div>
@@ -737,7 +792,7 @@
             </table>
         </div>
         
-        <div class="note mt-6">
+        <div class="note mt-6 card">
             <h3 class="font-bold text-center">Важное Примечание к Гормону Роста (ГР)</h3>
             <p>Гормон роста — это мощный инструмент, и его использование требует осторожности. Обязательно следуйте этим рекомендациям для безопасности:</p>
             <ul class="list-disc ml-5 mt-2">
