@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Vibrant Gradient & Slate -->
-    <!-- Application Structure Plan: Финальная SPA-структура с улучшенной мобильной навигацией (свайпы) и UX (закрепленная колонка в таблице). -->
-    <!-- Visualization & Content Choices: 1) Аминокислотный профиль: Диаграмма Chart.js. 2) Компоненты: Сбалансированные колонки. 3) Сравнительная таблица: Скролл на мобильных устройствах с закрепленной первой колонкой. 4) Научный анализ: Все блоки стилизованы. 5) Навигация: Яркий pill-дизайн и поддержка свайпов. -->
+    <!-- Application Structure Plan: Финальная SPA-структура с улучшенной мобильной навигацией (вертикальные свайпы) и UX (закрепленная колонка в таблице), что решает конфликт прокрутки. -->
+    <!-- Visualization & Content Choices: 1) Аминокислотный профиль: Диаграмма Chart.js. 2) Компоненты: Сбалансированные колонки. 3) Сравнительная таблица: Горизонтальный скролл на мобильных устройствах с закрепленной первой колонкой. 4) Научный анализ: Все блоки стилизованы. 5) Навигация: Яркий pill-дизайн и поддержка вертикальных свайпов. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -19,7 +19,7 @@
             background-color: #f1f5f9; /* slate-100 */
         }
         main {
-            touch-action: pan-y; /* Allow vertical scroll but handle horizontal with JS */
+            touch-action: pan-x; /* Allow horizontal scroll for table, but handle vertical with JS */
         }
         .page-content {
             display: none;
@@ -270,7 +270,7 @@
                                 <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Порций в упаковке</th><td class="px-6 py-4 text-center">~26</td><td class="px-6 py-4 text-center">~90</td><td class="px-6 py-4 text-center">30</td><td class="px-6 py-4 text-center">~36</td></tr>
                                 <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Примерная цена/порция</th><td class="px-6 py-4 text-center font-semibold text-red-600">~84 ₽</td><td class="px-6 py-4 text-center">~54 ₽</td><td class="px-6 py-4 text-center">~56 ₽</td><td class="px-6 py-4 text-center font-bold text-blue-600">~26 ₽</td></tr>
                                 <tr class="bg-white"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100 align-top">Профиль безопасности</th>
-                                    <td class="px-6 py-4 text-red-600 font-semibold">Высокий риск: Содержит Fo-Ti, связанный с тяжелой гепатотоксичностью.</td>
+                                    <td class="px-6 py-4 text-red-600 font-semibold">Высокий риск: Содержит Fo-Ti, связанный с тяжелой гепатотоксичностью. Высокая доза биотина искажает результаты анализов.</td>
                                     <td class="px-6 py-4 text-green-700">Низкий риск: Стандартные, хорошо изученные ингредиенты.</td>
                                     <td class="px-6 py-4 text-green-700">Низкий риск: Стандартные ингредиенты. Используется брендированный коллаген Peptan®.</td>
                                     <td class="px-6 py-4 text-green-700">Низкий риск: Простая, чистая формула.</td>
@@ -429,17 +429,18 @@
             window.addEventListener('popstate', () => showPage(window.location.hash));
             
             // Swipe navigation logic
-            let touchStartX = 0;
-            let touchEndX = 0;
+            let touchStartY = 0;
+            let touchEndY = 0;
             const pageHashes = Array.from(desktopNav.querySelectorAll('a.nav-link')).map(a => a.hash);
 
             function handleSwipe() {
                 if (window.innerWidth >= 768) return; // Only on mobile
-                const swipeThreshold = 50;
+                const swipeThreshold = 75; // Increased threshold
                 const currentHash = window.location.hash || '#overview';
                 const currentIndex = pageHashes.indexOf(currentHash);
 
-                if (touchEndX < touchStartX - swipeThreshold) { // Swiped left
+                // Swipe Up to next page
+                if (touchEndY < touchStartY - swipeThreshold) {
                     if (currentIndex < pageHashes.length - 1) {
                         const nextHash = pageHashes[currentIndex + 1];
                         history.pushState(null, '', nextHash);
@@ -447,7 +448,8 @@
                     }
                 }
 
-                if (touchEndX > touchStartX + swipeThreshold) { // Swiped right
+                // Swipe Down to previous page
+                if (touchEndY > touchStartY + swipeThreshold) {
                     if (currentIndex > 0) {
                         const prevHash = pageHashes[currentIndex - 1];
                         history.pushState(null, '', prevHash);
@@ -457,11 +459,11 @@
             }
 
             mainContent.addEventListener('touchstart', e => {
-                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
             }, { passive: true });
 
             mainContent.addEventListener('touchend', e => {
-                touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
                 handleSwipe();
             });
 
