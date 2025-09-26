@@ -10,13 +10,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Vibrant Gradient & Slate -->
-    <!-- Application Structure Plan: Финальная SPA-структура с логически разделенными страницами. Дизайн полностью переработан с использованием градиентных заголовков для создания яркого, современного вида. -->
-    <!-- Visualization & Content Choices: 1) Аминокислотный профиль: Диаграмма Chart.js. 2) Компоненты: Сбалансированные колонки. 3) Сравнительная таблица: Полная информация, акцентные стили. 4) Научный анализ: Все блоки стилизованы. 5) Навигация: Яркий pill-дизайн. -->
+    <!-- Application Structure Plan: Финальная SPA-структура с улучшенной мобильной навигацией (свайпы) и UX (закрепленная колонка в таблице). -->
+    <!-- Visualization & Content Choices: 1) Аминокислотный профиль: Диаграмма Chart.js. 2) Компоненты: Сбалансированные колонки. 3) Сравнительная таблица: Скролл на мобильных устройствах с закрепленной первой колонкой. 4) Научный анализ: Все блоки стилизованы. 5) Навигация: Яркий pill-дизайн и поддержка свайпов. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9; /* slate-100 */
+        }
+        main {
+            touch-action: pan-y; /* Allow vertical scroll but handle horizontal with JS */
         }
         .page-content {
             display: none;
@@ -78,6 +81,17 @@
             background-clip: text;
             color: transparent;
         }
+        /* Sticky column for competitors table */
+        #competitors table thead th:first-child,
+        #competitors table tbody th:first-child {
+            position: -webkit-sticky;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+        }
+        #competitors table tbody th:first-child {
+           box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body class="text-gray-900">
@@ -90,7 +104,7 @@
                         <span class="text-xl font-bold gradient-heading">Youtheory Men®</span>
                     </div>
                     <!-- Desktop Navigation -->
-                    <nav class="hidden md:flex items-center space-x-2 p-1 bg-slate-100 rounded-full">
+                    <nav id="desktop-nav" class="hidden md:flex items-center space-x-2 p-1 bg-slate-100 rounded-full">
                         <a href="#overview" class="nav-link py-1.5 px-4 text-sm">Обзор</a>
                         <a href="#composition" class="nav-link py-1.5 px-4 text-sm">Состав</a>
                         <a href="#analysis" class="nav-link py-1.5 px-4 text-sm">Анализ</a>
@@ -256,7 +270,7 @@
                                 <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Порций в упаковке</th><td class="px-6 py-4 text-center">~26</td><td class="px-6 py-4 text-center">~90</td><td class="px-6 py-4 text-center">30</td><td class="px-6 py-4 text-center">~36</td></tr>
                                 <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Примерная цена/порция</th><td class="px-6 py-4 text-center font-semibold text-red-600">~84 ₽</td><td class="px-6 py-4 text-center">~54 ₽</td><td class="px-6 py-4 text-center">~56 ₽</td><td class="px-6 py-4 text-center font-bold text-blue-600">~26 ₽</td></tr>
                                 <tr class="bg-white"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100 align-top">Профиль безопасности</th>
-                                    <td class="px-6 py-4 text-red-600 font-semibold">Высокий риск: Содержит Fo-Ti, связанный с тяжелой гепатотоксичностью. Высокая доза биотина искажает результаты анализов.</td>
+                                    <td class="px-6 py-4 text-red-600 font-semibold">Высокий риск: Содержит Fo-Ti, связанный с тяжелой гепатотоксичностью.</td>
                                     <td class="px-6 py-4 text-green-700">Низкий риск: Стандартные, хорошо изученные ингредиенты.</td>
                                     <td class="px-6 py-4 text-green-700">Низкий риск: Стандартные ингредиенты. Используется брендированный коллаген Peptan®.</td>
                                     <td class="px-6 py-4 text-green-700">Низкий риск: Простая, чистая формула.</td>
@@ -331,9 +345,11 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const navLinks = document.querySelectorAll('a.nav-link, a.mobile-nav-link');
+            const desktopNav = document.getElementById('desktop-nav');
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             const pages = document.querySelectorAll('.page-content');
+            const mainContent = document.querySelector('main');
             let chart = null;
             
             const componentsData = [
@@ -408,9 +424,48 @@
                     if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
                 });
             });
-
+            
             mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
             window.addEventListener('popstate', () => showPage(window.location.hash));
+            
+            // Swipe navigation logic
+            let touchStartX = 0;
+            let touchEndX = 0;
+            const pageHashes = Array.from(desktopNav.querySelectorAll('a.nav-link')).map(a => a.hash);
+
+            function handleSwipe() {
+                if (window.innerWidth >= 768) return; // Only on mobile
+                const swipeThreshold = 50;
+                const currentHash = window.location.hash || '#overview';
+                const currentIndex = pageHashes.indexOf(currentHash);
+
+                if (touchEndX < touchStartX - swipeThreshold) { // Swiped left
+                    if (currentIndex < pageHashes.length - 1) {
+                        const nextHash = pageHashes[currentIndex + 1];
+                        history.pushState(null, '', nextHash);
+                        showPage(nextHash);
+                    }
+                }
+
+                if (touchEndX > touchStartX + swipeThreshold) { // Swiped right
+                    if (currentIndex > 0) {
+                        const prevHash = pageHashes[currentIndex - 1];
+                        history.pushState(null, '', prevHash);
+                        showPage(prevHash);
+                    }
+                }
+            }
+
+            mainContent.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            mainContent.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            // Initial setup
             buildComponents();
             showPage(window.location.hash || '#overview');
         });
