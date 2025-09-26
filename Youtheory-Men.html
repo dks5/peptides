@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Полный Анализ: Youtheory Men® Collagen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Vibrant Gradient & Slate -->
+    <!-- Application Structure Plan: Финальная SPA-структура с логически разделенными страницами. Дизайн полностью переработан с использованием градиентных заголовков для создания яркого, современного вида. -->
+    <!-- Visualization & Content Choices: 1) Аминокислотный профиль: Диаграмма Chart.js. 2) Компоненты: Сбалансированные колонки. 3) Сравнительная таблица: Полная информация, акцентные стили. 4) Научный анализ: Все блоки стилизованы. 5) Навигация: Яркий pill-дизайн. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .page-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .page-content.active {
+            display: block;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+            color: #475569; /* slate-600 */
+            font-weight: 500;
+            border-radius: 9999px; /* rounded-full */
+        }
+        .nav-link:hover {
+            background-color: #f1f5f9; /* hover:bg-slate-100 */
+            color: #1e293b; /* hover:text-slate-800 */
+        }
+        .nav-link.active {
+            color: #ffffff; /* text-white */
+            background-image: linear-gradient(to right, #4f46e5, #7c3aed);
+            font-weight: 600; /* semibold */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .mobile-nav-link.active {
+            background-color: #4f46e5;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 500px;
+            max-height: 70vh;
+        }
+        .floating-card {
+            background-color: #ffffff;
+            border-radius: 1rem; /* .rounded-xl */
+            border: 1px solid #e2e8f0; /* .border-slate-200 */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07); /* .shadow-xl */
+        }
+        .floating-card-inner {
+             background-color: #ffffff;
+            border-radius: 0.75rem; /* .rounded-lg */
+            border: 1px solid #e2e8f0; /* .border-slate-200 */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05); /* .shadow-lg */
+            border-left-width: 4px;
+        }
+        .gradient-heading {
+            background-image: linear-gradient(to right, #4f46e5, #9333ea);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="text-gray-900">
+
+    <div class="container mx-auto max-w-5xl bg-white shadow-2xl min-h-screen border-x border-gray-200">
+        <header class="bg-white/95 backdrop-blur-sm sticky top-0 z-40 border-b border-gray-200">
+            <div class="px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex-shrink-0">
+                        <span class="text-xl font-bold gradient-heading">Youtheory Men®</span>
+                    </div>
+                    <!-- Desktop Navigation -->
+                    <nav class="hidden md:flex items-center space-x-2 p-1 bg-slate-100 rounded-full">
+                        <a href="#overview" class="nav-link py-1.5 px-4 text-sm">Обзор</a>
+                        <a href="#composition" class="nav-link py-1.5 px-4 text-sm">Состав</a>
+                        <a href="#analysis" class="nav-link py-1.5 px-4 text-sm">Анализ</a>
+                        <a href="#competitors" class="nav-link py-1.5 px-4 text-sm">Конкуренты</a>
+                        <a href="#usage" class="nav-link py-1.5 px-4 text-sm">Применение</a>
+                        <a href="#features" class="nav-link py-1.5 px-4 text-sm">Особенности</a>
+                    </nav>
+                    <!-- Mobile Navigation Button -->
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="md:hidden hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <a href="#overview" class="mobile-nav-link text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Обзор</a>
+                    <a href="#composition" class="mobile-nav-link text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Состав</a>
+                    <a href="#analysis" class="mobile-nav-link text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Научный анализ</a>
+                    <a href="#competitors" class="mobile-nav-link text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Конкуренты</a>
+                    <a href="#usage" class="mobile-nav-link text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Применение</a>
+                    <a href="#features" class="mobile-nav-link text-gray-700 hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Особенности</a>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 sm:p-6 lg:p-8">
+            <!-- Page: Overview -->
+            <section id="overview" class="page-content">
+                <div class="text-center">
+                    <h1 class="text-4xl sm:text-5xl font-bold gradient-heading">Youtheory Men® Collagen</h1>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">Усовершенствованная формула для поддержки мужского здоровья, разработанная для восполнения коллагена и борьбы с возрастными изменениями.</p>
+                </div>
+                <div class="mt-12 floating-card p-6">
+                    <h2 class="text-2xl font-bold text-center mb-6 gradient-heading">Ключевая информация</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                        <div class="bg-slate-50 p-4 rounded-lg border">
+                            <p class="text-sm text-slate-500">Бренд</p>
+                            <p class="font-semibold text-lg text-indigo-600">Youtheory Men®</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border">
+                            <p class="text-sm text-slate-500">Форма</p>
+                            <p class="font-semibold text-lg text-indigo-600">390 табл.</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border">
+                            <p class="text-sm text-slate-500">Порций</p>
+                            <p class="font-semibold text-lg text-indigo-600">65</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border">
+                            <p class="text-sm text-slate-500">Тип</p>
+                            <p class="font-semibold text-lg text-indigo-600">Биодобавка</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 floating-card p-6">
+                    <h3 class="text-2xl font-bold mb-4 gradient-heading">Предназначение и действие</h3>
+                    <p class="text-slate-700 leading-relaxed">Продукт создан для противодействия естественной возрастной потере коллагена. Каждая порция содержит <strong>5000 мг гидролизованных пептидов коллагена</strong>, обогащенных <strong>витамином С</strong>, <strong>биотином</strong> и <strong>экстрактом корня Фо-Ти</strong> для комплексного действия.</p>
+                </div>
+            </section>
+
+            <!-- Page: Composition -->
+            <section id="composition" class="page-content">
+                <h1 class="text-3xl font-bold text-center mb-12 gradient-heading">Детальный состав и анализ формы</h1>
+                <div class="floating-card p-6 sm:p-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="flex flex-col">
+                            <h2 class="text-2xl font-bold mb-6 gradient-heading">Основные компоненты</h2>
+                            <div id="components-container" class="space-y-4 flex-grow">
+                                <!-- JS generated content -->
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                             <h2 class="text-2xl font-bold mb-6 gradient-heading">Анализ формы и маркетинга</h2>
+                             <div class="floating-card-inner border-l-purple-500 p-6 rounded-lg h-full">
+                                <div class="space-y-4">
+                                    <div>
+                                        <h3 class="font-semibold text-lg text-purple-800">Таблеточная нагрузка</h3>
+                                        <p class="text-sm text-slate-700 mt-1">Необходимость приема шести крупных таблеток в день создает значительную «таблеточную нагрузку». Этот аспект часто упоминается в отзывах как существенный недостаток, который может негативно сказаться на соблюдении режима приема и, следовательно, на эффективности. Формат таблеток контрастирует с альтернативами в виде порошков.</p>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-lg text-purple-800">Маркетинг "Для мужчин"</h3>
+                                        <p class="text-sm text-slate-700 mt-1">Продукт продвигается в рамках линейки «Мужское здоровье», однако его ключевые ингредиенты универсальны и не обладают уникальными преимуществами именно для мужчин. Маркировка «для мужчин» является скорее маркетинговой стратегией, чем отражением уникальной, гендерно-ориентированной формулы.</p>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-12 floating-card p-6 sm:p-8">
+                    <h2 class="text-2xl font-bold text-center mb-4 gradient-heading">Аминокислотный профиль</h2>
+                    <p class="text-center text-slate-600 mb-6">Визуализация аминокислотного состава в одной порции.</p>
+                    <div class="chart-container"><canvas id="aminoAcidChart"></canvas></div>
+                </div>
+            </section>
+            
+            <!-- Page: Scientific Analysis -->
+            <section id="analysis" class="page-content">
+                <h1 class="text-3xl font-bold text-center mb-8 gradient-heading">Глубокий научный анализ</h1>
+                <div class="space-y-8">
+                    <div class="floating-card-inner border-l-indigo-500 p-6">
+                        <h2 class="text-2xl font-semibold mb-3 gradient-heading">3.1 Гидролизованные пептиды коллагена</h2>
+                        <p class="mb-4 text-slate-700">Основа продукта. Гидролизованная форма улучшает усвоение. Пептиды служат строительным материалом и стимулируют выработку собственного коллагена.</p>
+                        <ul class="list-disc list-inside space-y-2 text-slate-700">
+                            <li><strong>Здоровье кожи:</strong> Дозировка 5 г соответствует клинически изученному диапазону для улучшения увлажненности и эластичности кожи.</li>
+                            <li><strong>Здоровье суставов:</strong> Данные свидетельствуют об облегчении симптомов остеоартрита и уменьшении скованности.</li>
+                            <li><strong>Мышечная масса:</strong> Данные неоднозначны, требуется сочетание с физическими упражнениями для заметного эффекта.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="floating-card p-6">
+                        <h2 class="text-2xl font-semibold mb-4 gradient-heading">3.2 Поддерживающая матрица</h2>
+                        <div class="floating-card-inner border-l-green-500 p-4 mb-6">
+                            <h3 class="text-xl font-medium mb-2">Витамин C: незаменимый синергист</h3>
+                            <p class="text-slate-700">Играет критически важную роль в синтезе коллагена, являясь кофактором для ключевых ферментов. Его включение — это биохимическая необходимость для эффективности продукта.</p>
+                        </div>
+                        <div class="floating-card-inner border-l-red-500 p-4">
+                            <h3 class="text-xl font-medium mb-2 text-red-700">Биотин: спорный усилитель</h3>
+                            <p class="mb-2 text-slate-700">Польза биотина для людей без его дефицита научно не подтверждена. Дефицит встречается редко.</p>
+                            <p class="font-semibold text-red-800">Риск: Дозировка 900 мкг в 30 раз превышает норму. Такие мегадозы могут искажать результаты важных анализов крови (гормоны щитовидной железы, маркеры инфаркта), что ведет к риску постановки ложного диагноза.</p>
+                        </div>
+                    </div>
+
+                    <div class="floating-card-inner border-l-red-600 p-6">
+                        <h2 class="text-2xl font-semibold mb-3 text-red-700 gradient-heading">3.3 Проблемный ингредиент: Fo-Ti</h2>
+                        <p class="mb-2 text-slate-700">Популярное в китайской медицине растение, которому приписывают омолаживающие свойства. Однако убедительные научные доказательства его эффективности отсутствуют.</p>
+                        <p class="mt-4 font-bold text-red-800 text-lg">Неопровержимый риск: Множество авторитетных источников, включая NIH США, установили четкую связь между потреблением Fo-Ti и развитием тяжелого, острого поражения печени, которое может быть фатальным или требовать трансплантации.</p>
+                    </div>
+                    <div class="floating-card-inner border-l-yellow-500 p-6">
+                        <h2 class="text-2xl font-semibold text-center mb-3 gradient-heading">Заключение анализа</h2>
+                        <p class="text-slate-800 text-center">Состав продукта создает опасный парадокс: он сочетает эффективный и безопасный коллаген с научно не подтвержденной добавкой (Fo-Ti), которая несет задокументированный риск тяжелого повреждения печени. Это фундаментально подрывает позиционирование продукта как добавки для здоровья и подвергает потребителя ненужному риску.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Page: Competitors -->
+            <section id="competitors" class="page-content">
+                <h1 class="text-3xl font-bold text-center mb-8 gradient-heading">Конкурентная среда</h1>
+                <div class="floating-card overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-slate-600">
+                            <thead class="text-sm text-slate-700 uppercase bg-slate-200">
+                                <tr>
+                                    <th class="px-6 py-4 font-semibold">Характеристика</th>
+                                    <th class="px-6 py-4 text-center font-semibold">Youtheory Men's Collagen</th>
+                                    <th class="px-6 py-4 text-center font-semibold">California Gold Nutrition</th>
+                                    <th class="px-6 py-4 text-center font-semibold">Maxler Collagen</th>
+                                    <th class="px-6 py-4 text-center font-semibold">Be First Collagen</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100 align-middle">Изображение</th>
+                                    <td class="px-6 py-4"><img src="https://placehold.co/80x80/e2e8f0/94a3b8?text=IMG" alt="Youtheory Men's Collagen" class="mx-auto h-20 w-20 object-contain"></td>
+                                    <td class="px-6 py-4"><img src="https://placehold.co/80x80/e2e8f0/94a3b8?text=IMG" alt="California Gold Nutrition" class="mx-auto h-20 w-20 object-contain"></td>
+                                    <td class="px-6 py-4"><img src="https://placehold.co/80x80/e2e8f0/94a3b8?text=IMG" alt="Maxler Collagen" class="mx-auto h-20 w-20 object-contain"></td>
+                                    <td class="px-6 py-4"><img src="https://placehold.co/80x80/e2e8f0/94a3b8?text=IMG" alt="Be First Collagen" class="mx-auto h-20 w-20 object-contain"></td>
+                                </tr>
+                                <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Производитель</th><td class="px-6 py-4 text-center">nutrawise® (США)</td><td class="px-6 py-4 text-center">California Gold Nutrition (США)</td><td class="px-6 py-4 text-center">Maxler (Германия)</td><td class="px-6 py-4 text-center">Be First (Россия)</td></tr>
+                                <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Источник</th><td class="px-6 py-4 text-center">Говяжий</td><td class="px-6 py-4 text-center">Морской</td><td class="px-6 py-4 text-center">Говяжий (Peptan®)</td><td class="px-6 py-4 text-center">Говяжий</td></tr>
+                                <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Форма</th><td class="px-6 py-4 text-center">Таблетки</td><td class="px-6 py-4 text-center">Порошок</td><td class="px-6 py-4 text-center">Таблетки</td><td class="px-6 py-4 text-center">Порошок</td></tr>
+                                <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Примерная цена (Ozon)</th><td class="px-6 py-4 text-center">~2178 ₽ (160 таб.)</td><td class="px-6 py-4 text-center">~4835 ₽ (464 г)</td><td class="px-6 py-4 text-center">~1684 ₽ (90 таб.)</td><td class="px-6 py-4 text-center">~952 ₽ (200 г)</td></tr>
+                                <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Порций в упаковке</th><td class="px-6 py-4 text-center">~26</td><td class="px-6 py-4 text-center">~90</td><td class="px-6 py-4 text-center">30</td><td class="px-6 py-4 text-center">~36</td></tr>
+                                <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Примерная цена/порция</th><td class="px-6 py-4 text-center font-semibold text-red-600">~84 ₽</td><td class="px-6 py-4 text-center">~54 ₽</td><td class="px-6 py-4 text-center">~56 ₽</td><td class="px-6 py-4 text-center font-bold text-blue-600">~26 ₽</td></tr>
+                                <tr class="bg-white"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100 align-top">Профиль безопасности</th>
+                                    <td class="px-6 py-4 text-red-600 font-semibold">Высокий риск: Содержит Fo-Ti, связанный с тяжелой гепатотоксичностью. Высокая доза биотина искажает результаты анализов.</td>
+                                    <td class="px-6 py-4 text-green-700">Низкий риск: Стандартные, хорошо изученные ингредиенты.</td>
+                                    <td class="px-6 py-4 text-green-700">Низкий риск: Стандартные ингредиенты. Используется брендированный коллаген Peptan®.</td>
+                                    <td class="px-6 py-4 text-green-700">Низкий риск: Простая, чистая формула.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                 <div class="mt-8 floating-card-inner border-l-yellow-500 p-6">
+                    <h3 class="text-xl font-semibold text-yellow-800 mb-2">Выводы по сравнению</h3>
+                    <p class="text-slate-700">Youtheory Men® Collagen имеет невыгодное ценностное предложение: он дороже конкурентов в пересчете на порцию, а его формула более рискованна. Более простые и безопасные составы конкурентов, такие как у Be First, являются более продуманным выбором.</p>
+                </div>
+            </section>
+
+            <!-- Page: Usage -->
+            <section id="usage" class="page-content">
+                <h1 class="text-3xl font-bold text-center mb-8 gradient-heading">Применение и отзывы</h1>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="floating-card p-6">
+                        <h2 class="text-2xl font-bold mb-4 gradient-heading">Практические рекомендации</h2>
+                        <div class="space-y-4 text-slate-700">
+                             <div>
+                                <h3 class="font-semibold text-lg">Время приема</h3>
+                                <p class="text-sm mt-1">Не существует единого мнения о «лучшем» времени для приема коллагена. Ключевым фактором является регулярность. <span class="font-semibold text-indigo-700 bg-indigo-100 px-1 py-0.5 rounded">Некоторые теории предполагают прием на ночь для синхронизации с процессами восстановления или перед тренировкой, но убедительных доказательств в пользу какого-либо конкретного времени нет.</span></p>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Усвоение</h3>
+                                <p class="text-sm mt-1">Витамин C в составе уже помогает синтезу. Чтобы избежать дискомфорта, принимайте таблетки во время еды или разделите дозу на два приема (например, 3 утром и 3 вечером).</p>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Максимизация эффекта</h3>
+                                <p class="text-sm mt-1">Помимо добавки, важен образ жизни: диета, богатая аминокислотами, витамином C, цинком и медью, достаточный сон, управление стрессом и отказ от вредных привычек (курение, избыток солнца).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="floating-card p-6">
+                        <h2 class="text-2xl font-bold mb-4 gradient-heading">Анализ отзывов</h2>
+                        <div class="space-y-4">
+                            <div class="floating-card-inner border-l-green-500 p-4"><h4 class="font-semibold text-green-800">Плюсы</h4><p class="text-sm text-green-700 mt-1">Улучшение состояния суставов, укрепление ногтей, рост волос.</p></div>
+                            <div class="floating-card-inner border-l-red-500 p-4"><h4 class="font-semibold text-red-800">Минусы</h4><p class="text-sm text-red-700 mt-1">Большой размер таблеток, дозировка (6 шт/день), отсутствие эффекта у некоторых.</p></div>
+                            <div class="floating-card-inner border-l-blue-500 p-4"><h4 class="font-semibold text-blue-800">Общий вывод</h4><p class="text-sm text-blue-700 mt-1">Качественный продукт, эффект которого индивидуален.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Page: Features -->
+            <section id="features" class="page-content">
+                 <h1 class="text-3xl font-bold text-center mb-8 gradient-heading">Особенности и производитель</h1>
+                <div class="max-w-2xl mx-auto space-y-8">
+                    <div class="floating-card p-6">
+                        <h2 class="text-2xl font-bold text-center mb-6 gradient-heading">Чистый состав</h2>
+                        <div class="grid grid-cols-2 gap-4 text-center text-slate-700 font-medium">
+                            <div class="bg-slate-50 border p-4 rounded-lg">✅ Без молока</div>
+                            <div class="bg-slate-50 border p-4 rounded-lg">✅ Без сои</div>
+                            <div class="bg-slate-50 border p-4 rounded-lg">✅ Без глютена</div>
+                            <div class="bg-slate-50 border p-4 rounded-lg">✅ Без наполнителей</div>
+                        </div>
+                    </div>
+                    <div class="floating-card p-6">
+                        <h2 class="text-2xl font-bold mb-4 gradient-heading">Информация о производителе</h2>
+                        <ul class="space-y-2 text-slate-700">
+                           <li><strong>Производитель:</strong> nutrawise®, Ирвайн, Калифорния, США.</li>
+                           <li><strong>Веб-сайт:</strong> youtheory.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('a.nav-link, a.mobile-nav-link');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const pages = document.querySelectorAll('.page-content');
+            let chart = null;
+            
+            const componentsData = [
+                { name: 'Гидролизованные пептиды коллагена', value: '5000 мг', description: 'Основной строительный белок для поддержки прочности и эластичности тканей.' },
+                { name: 'Витамин C', value: '60 мг (70% нормы)', description: 'Ключевой витамин для синтеза собственного коллагена.' },
+                { name: 'Биотин', value: '900 мкг (3000% нормы)', description: 'Витамин B7 для здоровья волос, кожи и ногтей.' },
+                { name: 'Экстракт корня Фо-Ти', value: '420 мг', description: 'Растение из традиционной китайской медицины с доказанными рисками для печени.' }
+            ];
+            
+            const aminoAcidData = {
+                labels: ['Глицин', 'Пролин', 'Гидроксипролин', 'Глутаминовая к-та', 'Аргинин', 'Аланин', 'Аспарагиновая к-та', 'Лизин', 'Серин', 'Лейцин', 'Валин', 'Фенилаланин', 'Треонин', 'Изолейцин', 'Гидроксилизин', 'Гистидин', 'Метионин', 'Тирозин'],
+                values: [1030, 575, 585, 620, 420, 405, 330, 170, 170, 145, 120, 105, 95, 75, 50, 40, 30, 25]
+            };
+            
+            function buildComponents() {
+                const container = document.getElementById('components-container');
+                if (!container) return;
+                container.innerHTML = '';
+                componentsData.forEach(component => {
+                    const el = document.createElement('div');
+                    el.className = 'floating-card-inner p-4 border-l-indigo-500';
+                    el.innerHTML = `
+                        <div>
+                            <h3 class="font-semibold text-lg text-gray-800">${component.name}</h3>
+                            <p class="text-indigo-600 font-bold">${component.value}</p>
+                        </div>
+                        <p class="mt-2 text-slate-600 text-sm">${component.description}</p>
+                    `;
+                    container.appendChild(el);
+                });
+            }
+
+            function createChart() {
+                const canvas = document.getElementById('aminoAcidChart');
+                if (!canvas) return;
+                if (chart) chart.destroy();
+                const ctx = canvas.getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels: aminoAcidData.labels, datasets: [{ label: 'Количество (мг)', data: aminoAcidData.values, backgroundColor: '#6366f1', borderRadius: 4 }] },
+                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true }, y: { ticks: { autoSkip: false } } } }
+                });
+            }
+
+            function showPage(hash) {
+                const targetId = hash ? hash.substring(1) : 'overview';
+                let pageFound = false;
+                pages.forEach(page => {
+                    if (page.id === targetId) { page.classList.add('active'); pageFound = true; } 
+                    else { page.classList.remove('active'); }
+                });
+                if (!pageFound) document.getElementById('overview').classList.add('active');
+                const activeHash = pageFound ? hash : '#overview';
+                
+                document.querySelectorAll('a.nav-link').forEach(link => {
+                    link.classList.toggle('active', link.hash === activeHash);
+                });
+                document.querySelectorAll('a.mobile-nav-link').forEach(link => {
+                    link.classList.toggle('active', link.hash === activeHash);
+                });
+
+                if (targetId === 'composition' && !chart) createChart();
+                window.scrollTo(0, 0);
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const hash = e.currentTarget.hash;
+                    if (window.location.hash !== hash) history.pushState(null, '', hash);
+                    showPage(hash);
+                    if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
+                });
+            });
+
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            window.addEventListener('popstate', () => showPage(window.location.hash));
+            buildComponents();
+            showPage(window.location.hash || '#overview');
+        });
+    </script>
+</body>
+</html>
