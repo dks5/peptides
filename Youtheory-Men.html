@@ -10,16 +10,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Vibrant Gradient & Slate -->
-    <!-- Application Structure Plan: Финальная SPA-структура с улучшенной мобильной навигацией (вертикальные свайпы) и UX (закрепленная колонка в таблице), что решает конфликт прокрутки. -->
-    <!-- Visualization & Content Choices: 1) Аминокислотный профиль: Диаграмма Chart.js. 2) Компоненты: Сбалансированные колонки. 3) Сравнительная таблица: Горизонтальный скролл на мобильных устройствах с закрепленной первой колонкой. 4) Научный анализ: Все блоки стилизованы. 5) Навигация: Яркий pill-дизайн и поддержка вертикальных свайпов. -->
+    <!-- Application Structure Plan: Финальная SPA-структура с улучшенной мобильной навигацией (кнопки "вперед/назад") и исправленным UX таблицы. -->
+    <!-- Visualization & Content Choices: 1) Аминокислотный профиль: Диаграмма Chart.js. 2) Компоненты: Сбалансированные колонки. 3) Сравнительная таблица: Горизонтальный скролл с исправленным наложением. 4) Научный анализ: Все блоки стилизованы. 5) Навигация: Яркий pill-дизайн и кнопочная навигация на мобильных. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9; /* slate-100 */
-        }
-        main {
-            touch-action: pan-x; /* Allow horizontal scroll for table, but handle vertical with JS */
         }
         .page-content {
             display: none;
@@ -82,14 +79,20 @@
             color: transparent;
         }
         /* Sticky column for competitors table */
-        #competitors table thead th:first-child,
-        #competitors table tbody th:first-child {
+        #competitors table thead th:first-child {
+            position: -webkit-sticky;
+            position: sticky;
+            left: 0;
+            z-index: 20; /* Higher z-index */
+            background-color: #e2e8f0; /* bg-slate-200 */
+        }
+        #competitors table tbody th {
             position: -webkit-sticky;
             position: sticky;
             left: 0;
             z-index: 10;
         }
-        #competitors table tbody th:first-child {
+        #competitors table tbody th {
            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
         }
     </style>
@@ -97,7 +100,7 @@
 <body class="text-gray-900">
 
     <div class="container mx-auto max-w-5xl bg-white shadow-2xl min-h-screen border-x border-gray-200">
-        <header class="bg-white/95 backdrop-blur-sm sticky top-0 z-40 border-b border-gray-200">
+        <header class="bg-white/95 backdrop-blur-sm sticky top-0 z-30 border-b border-gray-200">
             <div class="px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
                     <div class="flex-shrink-0">
@@ -112,10 +115,16 @@
                         <a href="#usage" class="nav-link py-1.5 px-4 text-sm">Применение</a>
                         <a href="#features" class="nav-link py-1.5 px-4 text-sm">Особенности</a>
                     </nav>
-                    <!-- Mobile Navigation Button -->
-                    <div class="md:hidden">
-                        <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
+                    <!-- Mobile Navigation Controls -->
+                    <div id="mobile-nav-controls" class="md:hidden flex items-center gap-2">
+                         <button id="prev-page-btn" class="p-2 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-800">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                        </button>
+                         <button id="mobile-menu-button" class="p-2 rounded-md text-slate-500 hover:text-slate-800 hover:bg-slate-100">
                             <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                        </button>
+                         <button id="next-page-btn" class="p-2 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-800">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
                         </button>
                     </div>
                 </div>
@@ -137,8 +146,8 @@
             <!-- Page: Overview -->
             <section id="overview" class="page-content">
                 <div class="text-center">
-                    <h1 class="text-4xl sm:text-5xl font-bold gradient-heading">Youtheory Men® Collagen</h1>
-                    <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">Усовершенствованная формула для поддержки мужского здоровья, разработанная для восполнения коллагена и борьбы с возрастными изменениями.</p>
+                    <h1 class="text-3xl sm:text-4xl font-bold gradient-heading">Youtheory Men® Collagen</h1>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">Усовершенствованная формула для поддержки мужского здоровья.</p>
                 </div>
                 <div class="mt-12 floating-card p-6">
                     <h2 class="text-2xl font-bold text-center mb-6 gradient-heading">Ключевая информация</h2>
@@ -183,12 +192,16 @@
                              <div class="floating-card-inner border-l-purple-500 p-6 rounded-lg h-full">
                                 <div class="space-y-4">
                                     <div>
+                                        <h3 class="font-semibold text-lg text-purple-800">Заявления производителя и целевая аудитория</h3>
+                                        <p class="text-sm text-slate-700 mt-1">Производитель позиционирует Youtheory® Collagen for Men как продукт, «разработанный для каждого мужчины на любом этапе его жизни» с целью противодействия возрастной потере коллагена. Заявленные преимущества включают оживление кожи и волос, а также поддержку сухожилий и связок.</p>
+                                    </div>
+                                    <div>
                                         <h3 class="font-semibold text-lg text-purple-800">Таблеточная нагрузка</h3>
-                                        <p class="text-sm text-slate-700 mt-1">Необходимость приема шести крупных таблеток в день создает значительную «таблеточную нагрузку». Этот аспект часто упоминается в отзывах как существенный недостаток, который может негативно сказаться на соблюдении режима приема и, следовательно, на эффективности. Формат таблеток контрастирует с альтернативами в виде порошков.</p>
+                                        <p class="text-sm text-slate-700 mt-1">необходимость приема шести крупных таблеток в день создает значительную «таблеточную нагрузку».4 Этот аспект часто упоминается в отзывах потребителей как существенный недостаток. Этот формат резко контрастирует с альтернативами в виде порошков, требующими приема всего одной мерной ложки.</p>
                                     </div>
                                     <div>
                                         <h3 class="font-semibold text-lg text-purple-800">Маркетинг "Для мужчин"</h3>
-                                        <p class="text-sm text-slate-700 mt-1">Продукт продвигается в рамках линейки «Мужское здоровье», однако его ключевые ингредиенты универсальны и не обладают уникальными преимуществами именно для мужчин. Маркировка «для мужчин» является скорее маркетинговой стратегией, чем отражением уникальной, гендерно-ориентированной формулы.</p>
+                                        <p class="text-sm text-slate-700 mt-1">Продукт продвигается в рамках линейки «Мужское здоровье», однако его ключевые ингредиенты — коллаген, витамин C и биотин — являются универсальными и не обладают уникальными преимуществами именно для мужчин. Даже один из отзывов отмечает, что <span class="text-purple-800 font-semibold">продукт с таким же успехом мог бы продаваться и для женщин.</span> Единственным компонентом, который можно условно связать с традиционными представлениями о мужской «жизненной силе», является Fo-Ti, чья эффективность научно не подтверждена. Это позволяет сделать вывод, что маркировка «для мужчин» является скорее маркетинговой стратегией, чем отражением уникальной, гендерно-ориентированной формулы, что необоснованно сужает потенциальный рынок.</p>
                                     </div>
                                 </div>
                              </div>
@@ -270,7 +283,7 @@
                                 <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Порций в упаковке</th><td class="px-6 py-4 text-center">~26</td><td class="px-6 py-4 text-center">~90</td><td class="px-6 py-4 text-center">30</td><td class="px-6 py-4 text-center">~36</td></tr>
                                 <tr class="border-b"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100">Примерная цена/порция</th><td class="px-6 py-4 text-center font-semibold text-red-600">~84 ₽</td><td class="px-6 py-4 text-center">~54 ₽</td><td class="px-6 py-4 text-center">~56 ₽</td><td class="px-6 py-4 text-center font-bold text-blue-600">~26 ₽</td></tr>
                                 <tr class="bg-white"><th class="px-6 py-4 font-semibold text-slate-800 bg-slate-100 align-top">Профиль безопасности</th>
-                                    <td class="px-6 py-4 text-red-600 font-semibold">Высокий риск: Содержит Fo-Ti, связанный с тяжелой гепатотоксичностью. Высокая доза биотина искажает результаты анализов.</td>
+                                    <td class="px-6 py-4 text-red-600 font-semibold">Высокий риск: Содержит Fo-Ti, связанный с тяжелой гепатотоксичностью.</td>
                                     <td class="px-6 py-4 text-green-700">Низкий риск: Стандартные, хорошо изученные ингредиенты.</td>
                                     <td class="px-6 py-4 text-green-700">Низкий риск: Стандартные ингредиенты. Используется брендированный коллаген Peptan®.</td>
                                     <td class="px-6 py-4 text-green-700">Низкий риск: Простая, чистая формула.</td>
@@ -348,8 +361,9 @@
             const desktopNav = document.getElementById('desktop-nav');
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
+            const prevPageBtn = document.getElementById('prev-page-btn');
+            const nextPageBtn = document.getElementById('next-page-btn');
             const pages = document.querySelectorAll('.page-content');
-            const mainContent = document.querySelector('main');
             let chart = null;
             
             const componentsData = [
@@ -364,6 +378,8 @@
                 values: [1030, 575, 585, 620, 420, 405, 330, 170, 170, 145, 120, 105, 95, 75, 50, 40, 30, 25]
             };
             
+            const pageHashes = Array.from(desktopNav.querySelectorAll('a.nav-link')).map(a => a.hash);
+
             function buildComponents() {
                 const container = document.getElementById('components-container');
                 if (!container) return;
@@ -397,12 +413,25 @@
             function showPage(hash) {
                 const targetId = hash ? hash.substring(1) : 'overview';
                 let pageFound = false;
-                pages.forEach(page => {
-                    if (page.id === targetId) { page.classList.add('active'); pageFound = true; } 
+                let activeIndex = 0;
+                pages.forEach((page, index) => {
+                    if (page.id === targetId) { 
+                        page.classList.add('active'); 
+                        pageFound = true; 
+                        activeIndex = index;
+                    } 
                     else { page.classList.remove('active'); }
                 });
-                if (!pageFound) document.getElementById('overview').classList.add('active');
-                const activeHash = pageFound ? hash : '#overview';
+                
+                if (!pageFound) {
+                    pages[0].classList.add('active');
+                    activeIndex = 0;
+                }
+
+                const activeHash = pageHashes[activeIndex];
+                if (window.location.hash !== activeHash) {
+                    history.pushState(null, '', activeHash);
+                }
                 
                 document.querySelectorAll('a.nav-link').forEach(link => {
                     link.classList.toggle('active', link.hash === activeHash);
@@ -410,67 +439,45 @@
                 document.querySelectorAll('a.mobile-nav-link').forEach(link => {
                     link.classList.toggle('active', link.hash === activeHash);
                 });
+                
+                // Update mobile nav button states
+                prevPageBtn.disabled = activeIndex === 0;
+                prevPageBtn.classList.toggle('opacity-50', activeIndex === 0);
+                nextPageBtn.disabled = activeIndex === pageHashes.length - 1;
+                nextPageBtn.classList.toggle('opacity-50', activeIndex === pageHashes.length - 1);
 
                 if (targetId === 'composition' && !chart) createChart();
                 window.scrollTo(0, 0);
             }
 
+            function navigate(direction) {
+                const currentHash = window.location.hash || '#overview';
+                const currentIndex = pageHashes.indexOf(currentHash);
+                const newIndex = currentIndex + direction;
+                if (newIndex >= 0 && newIndex < pageHashes.length) {
+                    showPage(pageHashes[newIndex]);
+                }
+            }
+
             navLinks.forEach(link => {
                 link.addEventListener('click', e => {
                     e.preventDefault();
-                    const hash = e.currentTarget.hash;
-                    if (window.location.hash !== hash) history.pushState(null, '', hash);
-                    showPage(hash);
+                    showPage(e.currentTarget.hash);
                     if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden');
                 });
             });
             
             mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            prevPageBtn.addEventListener('click', () => navigate(-1));
+            nextPageBtn.addEventListener('click', () => navigate(1));
             window.addEventListener('popstate', () => showPage(window.location.hash));
             
-            // Swipe navigation logic
-            let touchStartY = 0;
-            let touchEndY = 0;
-            const pageHashes = Array.from(desktopNav.querySelectorAll('a.nav-link')).map(a => a.hash);
-
-            function handleSwipe() {
-                if (window.innerWidth >= 768) return; // Only on mobile
-                const swipeThreshold = 75; // Increased threshold
-                const currentHash = window.location.hash || '#overview';
-                const currentIndex = pageHashes.indexOf(currentHash);
-
-                // Swipe Up to next page
-                if (touchEndY < touchStartY - swipeThreshold) {
-                    if (currentIndex < pageHashes.length - 1) {
-                        const nextHash = pageHashes[currentIndex + 1];
-                        history.pushState(null, '', nextHash);
-                        showPage(nextHash);
-                    }
-                }
-
-                // Swipe Down to previous page
-                if (touchEndY > touchStartY + swipeThreshold) {
-                    if (currentIndex > 0) {
-                        const prevHash = pageHashes[currentIndex - 1];
-                        history.pushState(null, '', prevHash);
-                        showPage(prevHash);
-                    }
-                }
-            }
-
-            mainContent.addEventListener('touchstart', e => {
-                touchStartY = e.changedTouches[0].screenY;
-            }, { passive: true });
-
-            mainContent.addEventListener('touchend', e => {
-                touchEndY = e.changedTouches[0].screenY;
-                handleSwipe();
-            });
-
-            // Initial setup
             buildComponents();
             showPage(window.location.hash || '#overview');
         });
     </script>
 </body>
 </html>
+
+
+
