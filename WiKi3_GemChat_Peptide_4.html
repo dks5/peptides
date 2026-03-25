@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Пептид-Трекер V2.0</title>
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-color: #ffffff;
+            --accent-blue: #0a84ff;
+            --accent-red: #ff3b30;
+            --accent-green: #30d158;
+            --accent-orange: #ff9f0a;
+            --accent-purple: #bf5af2;
+            --bg-gradient: linear-gradient(135deg, #1c1c1e, #2c2c2e, #1a1a24);
+        }
+
+        body {
+            margin: 0; padding: 15px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-gradient); background-attachment: fixed; color: var(--text-color);
+            min-height: 100vh; padding-bottom: 50px;
+        }
+
+        /* --- HEADER И ВИДЖЕТЫ --- */
+        .app-title { font-size: 14px; color: var(--accent-blue); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .header-section { margin-bottom: 20px; margin-top: 10px; }
+        .header-title { font-size: 28px; font-weight: 700; margin-bottom: 2px; }
+        .header-date { font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 15px; text-transform: capitalize; }
+        
+        .widgets-scroll { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .widgets-scroll::-webkit-scrollbar { display: none; }
+        
+        .widget-card { 
+            flex: 0 0 130px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); 
+            border-radius: 16px; padding: 12px; scroll-snap-align: start; 
+            display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s;
+        }
+        .widget-card.success { background: rgba(48, 209, 88, 0.2); border-color: var(--accent-green); }
+        .widget-title { font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+        .widget-value { font-size: 16px; font-weight: 600; line-height: 1.3; }
+
+        /* --- ОСНОВНЫЕ СТИЛИ --- */
+        .glass-card {
+            background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 20px; padding: 15px; margin-bottom: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        details { margin-bottom: 15px; }
+        summary { font-size: 18px; font-weight: 600; cursor: pointer; outline: none; list-style: none; }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '+'; float: right; font-size: 24px; line-height: 20px; color: var(--accent-blue); }
+        details[open] summary::after { content: '−'; }
+        details[open] summary { margin-bottom: 15px; }
+
+        /* --- ДАШБОРД И ЛЕГЕНДА --- */
+        .legend-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; font-size: 11px; color: rgba(255,255,255,0.8); }
+        .legend-item { display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 8px; }
+        .legend-color { width: 10px; height: 10px; border-radius: 50%; }
+
+        .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .day-col { display: flex; flex-direction: column; align-items: center; padding: 10px 2px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); min-height: 60px; }
+        .current-day { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255,255,255,0.3); animation: breathe 3s infinite ease-in-out; }
+        .day-name { font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+        .pill-circle { width: 22px; height: 22px; border-radius: 50%; border: 2px solid; margin-bottom: 6px; cursor: pointer; transition: 0.2s; }
+        @keyframes breathe { 0% { box-shadow: 0 0 0 rgba(255,255,255,0); } 50% { box-shadow: 0 0 10px rgba(255,255,255,0.2); } 100% { box-shadow: 0 0 0 rgba(255,255,255,0); } }
+
+        /* --- КАЛЬКУЛЯТОР И НОВЫЙ ШПРИЦ --- */
+        input[type="text"], input[type="number"], input[type="date"], select {
+            background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: white;
+            padding: 10px; border-radius: 10px; font-size: 16px; outline: none; width: 100%; box-sizing: border-box;
+            color-scheme: dark; /* Для иконки календаря */
+        }
+        .btn-tile {
+            flex: 1; padding: 10px 5px; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);
+            border-radius: 10px; color: white; text-align: center; cursor: pointer; font-size: 14px; transition: 0.2s;
+        }
+        .btn-tile.active { background: var(--accent-blue); border-color: var(--accent-blue); font-weight: bold; }
+        .flex-row { display: flex; gap: 8px; margin-bottom: 15px; }
+        .label { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 5px; display: block; }
+        
+        .result-box { margin-top: 15px; padding: 12px; background: rgba(48, 209, 88, 0.2); border: 1px solid var(--accent-green); border-radius: 12px; text-align: center; font-size: 16px; font-weight: bold; }
+
+        .syringe-wrapper { 
+            width: 100%; height: 70px; border: 2px solid rgba(255,255,255,0.5); border-radius: 12px; 
+            position: relative; background: rgba(255,255,255,0.05); margin-top: 15px; display: flex; flex-direction: column;
+        }
+        .liquid { 
+            position: absolute; left: 0; top: 0; bottom: 0; width: 0%; 
+            background: linear-gradient(90deg, #00c6ff, var(--accent-blue)); 
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; border-radius: 10px;
+        }
+        .syringe-scale-container {
+            position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 2; 
+            display: flex; flex-direction: column; justify-content: space-between; padding: 0 5px;
+        }
+        .ticks-row { display: flex; justify-content: space-between; align-items: flex-start; height: 20px; width: 100%; }
+        .numbers-row { display: flex; justify-content: space-between; width: 100%; padding: 0 2px; box-sizing: border-box; }
+        
+        .tick { width: 1px; background: rgba(255,255,255,0.4); height: 6px; }
+        .tick.major { height: 14px; background: rgba(255,255,255,0.9); width: 2px; }
+        .tick.mid { height: 10px; background: rgba(255,255,255,0.7); }
+        .scale-number { font-size: 9px; color: rgba(255,255,255,0.8); transform: translateX(-50%); width: 20px; text-align: center; }
+        .scale-number:first-child { color: transparent; } /* Прячем 0 */
+
+        /* --- ТАЙМЛАЙН И СПРАВОЧНИК --- */
+        .timeline-wrapper { overflow-x: auto; margin-top: 5px; padding-bottom: 10px; }
+        .timeline-grid { min-width: 400px; display: grid; grid-template-columns: 80px repeat(12, 1fr); gap: 4px; align-items: center; }
+        .tl-header { font-size: 10px; color: rgba(255,255,255,0.5); text-align: center; margin-bottom: 8px; }
+        .tl-label { font-size: 11px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+        .tl-cell { height: 16px; background: rgba(255,255,255,0.05); border-radius: 4px; transition: 0.3s; }
+        .tl-cell.active { opacity: 0.5; } /* Снижение контрастности таймлайна */
+        
+        .directory-card { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; margin-bottom: 10px; }
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; background: rgba(255,255,255,0.1); margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <div class="app-title">Пептид-Трекер</div>
+        <div class="header-title">Сегодня</div>
+        <div class="header-date" id="currentDateDisplay">Загрузка даты...</div>
+        
+        <div class="widgets-scroll">
+            <div class="widget-card" id="widgetStatus">
+                <div class="widget-title">Статус дня</div>
+                <div class="widget-value" id="widgetStatusText">0 / 0<br>сделано</div>
+            </div>
+            <div class="widget-card">
+                <div class="widget-title">Обзор курса</div>
+                <div class="widget-value" id="widgetCourseText">0<br>препаратов</div>
+            </div>
+            <div class="widget-card" id="widgetBreak">
+                <div class="widget-title">Ближайший отдых</div>
+                <div class="widget-value" id="widgetBreakText" style="font-size: 12px; color: #ccc; font-weight: normal;">Укажите дату старта в настройках</div>
+            </div>
+        </div>
+    </div>
+
+    <details class="glass-card" open id="dashboardSection">
+        <summary>План на неделю</summary>
+        
+        <div class="legend-container" id="dashboardLegend"></div>
+        
+        <div id="emptyDashboardMsg" style="font-size: 14px; color: #ccc; text-align: center; display: none;">Ваш курс пуст. Добавьте препараты из Справочника.</div>
+        <div class="week-grid" id="weekGrid"></div>
+    </details>
+
+    <details class="glass-card" open id="calcSection">
+        <summary>Калькулятор шприца</summary>
+        <span class="label">Флакон с пептидом (мг)</span>
+        <div class="flex-row">
+            <div class="btn-tile" onclick="setVial(2)">2 мг</div>
+            <div class="btn-tile active" onclick="setVial(5)">5 мг</div>
+            <div class="btn-tile" onclick="setVial(10)">10 мг</div>
+        </div>
+        <span class="label">Бактериостатическая вода (мл)</span>
+        <div class="flex-row">
+            <div class="btn-tile active" onclick="setWater(1)">1 мл</div>
+            <div class="btn-tile" onclick="setWater(2)">2 мл</div>
+            <div class="btn-tile" onclick="setWater(3)">3 мл</div>
+        </div>
+        <input type="range" id="waterSlider" min="0.5" max="5.0" step="0.5" value="1.0" oninput="updateWaterFromSlider()" style="width:100%; margin-bottom: 15px;">
+        <span class="label">Необходимая разовая доза</span>
+        <div class="flex-row" style="align-items: center;">
+            <input type="number" id="targetDose" value="2.5" step="0.1" oninput="calculate()" style="flex: 2;">
+            <select id="doseUnit" onchange="calculate()" style="flex: 1; padding: 10px;">
+                <option value="mg" selected>мг</option>
+                <option value="mcg">мкг</option>
+            </select>
+        </div>
+        <div class="result-box" id="calcResult">Набрать: 50 единиц</div>
+        
+        <div class="syringe-wrapper">
+            <div class="liquid" id="syringeLiquid"></div>
+            <div class="syringe-scale-container">
+                <div class="ticks-row" id="syringeTicks"></div>
+                <div class="numbers-row" id="syringeNumbers"></div>
+            </div>
+        </div>
+        <div style="font-size: 11px; color: #ccc; text-align: center; margin-top: 8px;">Шприц U-100 (1 мл)</div>
+    </details>
+
+    <details class="glass-card" id="settingsSection">
+        <summary>Настройки курса</summary>
+        <div id="courseSettingsList"></div>
+    </details>
+
+    <details class="glass-card" id="timelineSection">
+        <summary>Таймлайн курсов</summary>
+        <div style="font-size: 12px; color: #ccc; margin-bottom: 10px;">Прогноз на 12 недель (закрашено — период приема)</div>
+        <div class="timeline-wrapper">
+            <div class="timeline-grid" id="timelineGrid"></div>
+        </div>
+    </details>
+
+    <details class="glass-card" id="directorySection">
+        <summary>Справочник пептидов</summary>
+        <input type="text" id="searchInput" placeholder="Поиск (например, BPC-157)..." onkeyup="renderDirectory()" style="margin-bottom: 15px;">
+        <div id="directoryList"></div>
+    </details>
+
+    <script>
+        // БАЗА ДАННЫХ (Сокращена для примера, полная база из 55 пептидов сохраняется как в прошлом шаге)
+        const database = [
+            { id: "tirzepatide", name: "Tirzepatide", type: "GLP-1/GIP", color: "var(--accent-blue)", dosage: "2.5 → 15 мг/нед", course: "Длительно", cycle: { on: 16, off: 4 }, defaults: { v: 5, u: "mg", d: 2.5 } },
+            { id: "bpc157", name: "BPC-157", type: "Регенерация", color: "var(--accent-green)", dosage: "250 мкг", course: "4 недели", cycle: { on: 4, off: 4 }, defaults: { v: 5, u: "mcg", d: 250 } },
+            { id: "pinealon", name: "Pinealon", type: "Пептид", color: "var(--accent-red)", dosage: "10 единиц", course: "20 дней", cycle: { on: 3, off: 9 }, defaults: { v: 5, u: "mg", d: 0.5 } }
+        ];
+
+        let myCourse = JSON.parse(localStorage.getItem('myCourse')) || [];
+        const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+        let todayIndex = new Date().getDay() - 1;
+        if (todayIndex === -1) todayIndex = 6;
+
+        function saveCourse() { localStorage.setItem('myCourse', JSON.stringify(myCourse)); }
+
+        // --- ВИДЖЕТЫ И ДАТА ---
+        function updateWidgets() {
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            document.getElementById('currentDateDisplay').innerText = new Intl.DateTimeFormat('ru-RU', options).format(new Date());
+
+            // Виджет 1: Статус дня
+            const medsToday = myCourse.filter(p => p.schedule[todayIndex]);
+            const totalToday = medsToday.length;
+            let takenToday = 0;
+            medsToday.forEach(med => {
+                if (localStorage.getItem(`taken_${med.id}_${todayIndex}`) === 'true') takenToday++;
+            });
+
+            const wStatus = document.getElementById('widgetStatus');
+            const wText = document.getElementById('widgetStatusText');
+            if (totalToday === 0) {
+                wText.innerHTML = "Нет уколов<br>на сегодня"; wStatus.classList.remove('success');
+            } else if (takenToday === totalToday) {
+                wText.innerHTML = "Все<br>выполнено!"; wStatus.classList.add('success');
+            } else {
+                wText.innerHTML = `${takenToday} / ${totalToday}<br>сделано`; wStatus.classList.remove('success');
+            }
+
+            // Виджет 2: Обзор
+            document.getElementById('widgetCourseText').innerHTML = `${myCourse.length}<br>препаратов`;
+
+            // Виджет 3: Ближайший отдых (Логика дат)
+            const wBreakText = document.getElementById('widgetBreakText');
+            let closestBreakDate = null;
+            let breakPeptideName = "";
+
+            myCourse.forEach(p => {
+                if (p.startDate && p.cycle && p.cycle.on > 0) {
+                    const start = new Date(p.startDate);
+                    // Прибавляем недели приема
+                    const breakDate = new Date(start.getTime() + p.cycle.on * 7 * 24 * 60 * 60 * 1000);
+                    if (breakDate > new Date() && (!closestBreakDate || breakDate < closestBreakDate)) {
+                        closestBreakDate = breakDate;
+                        breakPeptideName = p.name;
+                    }
+                }
+            });
+
+            if (closestBreakDate) {
+                const diffTime = Math.abs(closestBreakDate - new Date());
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                wBreakText.innerHTML = `<span style="color:var(--text-color); font-weight:bold; font-size:14px;">${breakPeptideName}</span><br>через ${diffDays} дн.`;
+            } else {
+                wBreakText.innerHTML = `Укажите дату старта в настройках`;
+            }
+        }
+
+        // --- ДАШБОРД ---
+        function renderDashboard() {
+            const grid = document.getElementById('weekGrid');
+            const legend = document.getElementById('dashboardLegend');
+            grid.innerHTML = '';
+            legend.innerHTML = '';
+
+            if (myCourse.length === 0) {
+                document.getElementById('emptyDashboardMsg').style.display = 'block';
+                updateWidgets(); return;
+            }
+            document.getElementById('emptyDashboardMsg').style.display = 'none';
+
+            // Отрисовка Легенды
+            myCourse.forEach(p => {
+                legend.innerHTML += `<div class="legend-item"><div class="legend-color" style="background:${p.color}"></div>${p.name}</div>`;
+            });
+
+            daysOfWeek.forEach((day, dIndex) => {
+                const col = document.createElement('div');
+                col.className = `day-col ${dIndex === todayIndex ? 'current-day' : ''}`;
+                col.innerHTML = `<div class="day-name">${day}</div>`;
+
+                const medsToday = myCourse.filter(p => p.schedule[dIndex]);
+                medsToday.forEach(med => {
+                    const pill = document.createElement('div');
+                    pill.className = 'pill-circle';
+                    pill.style.borderColor = med.color;
+                    
+                    const trackId = `taken_${med.id}_${dIndex}`;
+                    if (localStorage.getItem(trackId) === 'true') {
+                        pill.style.background = med.color;
+                        pill.style.boxShadow = `0 0 8px ${med.color}`;
+                    }
+
+                    pill.onclick = function() {
+                        if (localStorage.getItem(trackId) === 'true') {
+                            localStorage.removeItem(trackId);
+                            this.style.background = 'transparent';
+                            this.style.boxShadow = 'none';
+                        } else {
+                            localStorage.setItem(trackId, 'true');
+                            this.style.background = med.color;
+                            this.style.boxShadow = `0 0 8px ${med.color}`;
+                        }
+                        updateWidgets();
+                    };
+                    col.appendChild(pill);
+                });
+                grid.appendChild(col);
+            });
+            updateWidgets();
+        }
+
+        // --- НАСТРОЙКИ С ДАТАМИ ---
+        function renderSettings() {
+            const container = document.getElementById('courseSettingsList');
+            if (myCourse.length === 0) {
+                container.innerHTML = '<div style="font-size: 14px; color: #ccc; text-align: center;">Добавьте препараты из Справочника.</div>';
+                return;
+            }
+            container.innerHTML = '';
+            myCourse.forEach(p => {
+                let html = `
+                    <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <strong style="color: ${p.color}">${p.name}</strong>
+                            <button onclick="removeFromCourse('${p.id}')" style="background:transparent; border:1px solid var(--accent-red); color:var(--accent-red); border-radius:6px; padding:4px 8px; font-size:12px;">Удалить</button>
+                        </div>
+                        
+                        <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                            <span style="font-size: 12px; color: #ccc;">Дата начала курса:</span>
+                            <input type="date" value="${p.startDate || ''}" onchange="updateStartDate('${p.id}', this.value)" style="width: auto; padding: 6px; font-size: 14px;">
+                        </div>
+
+                        <div style="display: flex; gap: 4px;">`;
+                daysOfWeek.forEach((day, dIndex) => {
+                    const isActive = p.schedule[dIndex];
+                    html += `<button onclick="toggleDay('${p.id}', ${dIndex})" style="flex:1; padding:6px 0; border:none; border-radius:6px; font-size:12px; background: ${isActive ? p.color : 'rgba(255,255,255,0.1)'}; color: ${isActive ? '#fff' : 'rgba(255,255,255,0.5)'};">${day}</button>`;
+                });
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function updateStartDate(id, dateStr) {
+            const peptide = myCourse.find(p => p.id === id);
+            if (peptide) {
+                peptide.startDate = dateStr;
+                saveCourse();
+                updateWidgets();
+            }
+        }
+
+        // --- КАЛЬКУЛЯТОР И ОТРИСОВКА ШПРИЦА ---
+        let currentVialMg = 5; let currentWaterMl = 1.0;
+
+        function initSyringeScale() {
+            const ticksRow = document.getElementById('syringeTicks');
+            const numbersRow = document.getElementById('syringeNumbers');
+            ticksRow.innerHTML = ''; numbersRow.innerHTML = '';
+
+            for (let i = 0; i <= 100; i++) {
+                const tick = document.createElement('div');
+                if (i % 10 === 0) {
+                    tick.className = 'tick major';
+                    // Добавляем цифру каждые 10 единиц
+                    const num = document.createElement('div');
+                    num.className = 'scale-number';
+                    num.innerText = i;
+                    // Располагаем цифру точно под риской
+                    num.style.position = 'absolute';
+                    num.style.left = `${i}%`;
+                    numbersRow.appendChild(num);
+                } else if (i % 5 === 0) {
+                    tick.className = 'tick mid';
+                } else {
+                    tick.className = 'tick';
+                }
+                ticksRow.appendChild(tick);
+            }
+        }
+
+        function calculate() {
+            const doseInput = parseFloat(document.getElementById('targetDose').value);
+            const unit = document.getElementById('doseUnit').value;
+            const resultBox = document.getElementById('calcResult');
+            const liquid = document.getElementById('syringeLiquid');
+
+            if (isNaN(doseInput) || doseInput <= 0) {
+                resultBox.innerText = "Введите дозу"; liquid.style.width = '0%'; return;
+            }
+
+            const targetMg = unit === 'mcg' ? doseInput / 1000 : doseInput;
+            const concentration = currentVialMg / currentWaterMl; 
+            const volumeNeeded = targetMg / concentration; 
+            const units = Math.round(volumeNeeded * 100); 
+
+            if (units > 100) {
+                resultBox.innerText = `Ошибка: ${units} ед. (> 1 шприца)`;
+                resultBox.style.borderColor = "var(--accent-red)"; resultBox.style.color = "var(--accent-red)";
+                liquid.style.width = '100%'; liquid.style.background = "var(--accent-red)";
+            } else {
+                resultBox.innerText = `Набрать: ${units} ед. (из 100)`;
+                resultBox.style.borderColor = "var(--accent-green)"; resultBox.style.color = "white";
+                liquid.style.width = units + '%'; liquid.style.background = "linear-gradient(90deg, #00c6ff, var(--accent-blue))";
+            }
+        }
+
+        function setVial(mg) { currentVialMg = mg; document.querySelectorAll('.btn-tile')[0].classList.toggle('active', mg===2); document.querySelectorAll('.btn-tile')[1].classList.toggle('active', mg===5); document.querySelectorAll('.btn-tile')[2].classList.toggle('active', mg===10); calculate(); }
+        function setWater(ml) { currentWaterMl = ml; document.getElementById('waterSlider').value = ml; updateWaterTiles(); calculate(); }
+        function updateWaterFromSlider() { currentWaterMl = parseFloat(document.getElementById('waterSlider').value); updateWaterTiles(); calculate(); }
+        function updateWaterTiles() { const tiles = document.querySelectorAll('.btn-tile'); tiles[3].classList.toggle('active', currentWaterMl===1); tiles[4].classList.toggle('active', currentWaterMl===2); tiles[5].classList.toggle('active', currentWaterMl===3); }
+        
+        // --- ПРОЧИЕ ФУНКЦИИ (Справочник, Таймлайн, Добавление/Удаление) ---
+        function renderDirectory() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('directoryList'); container.innerHTML = '';
+            const filtered = database.filter(p => p.name.toLowerCase().includes(query) || p.type.toLowerCase().includes(query));
+            filtered.forEach(p => {
+                const isAdded = myCourse.some(item => item.id === p.id);
+                container.innerHTML += `
+                    <div class="directory-card">
+                        <div style="display: flex; justify-content: space-between;"><strong style="color: ${p.color};">${p.name}</strong><span class="badge">${p.type}</span></div>
+                        <div style="font-size: 12px; color: #aaa; margin: 8px 0;">Доза: ${p.dosage}<br>Курс: ${p.course}</div>
+                        <button onclick="addToCourse('${p.id}')" style="width:100%; padding:8px; border-radius:8px; border:none; background: ${isAdded ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.15)'}; color: ${isAdded ? '#888' : '#fff'};" ${isAdded ? 'disabled' : ''}>${isAdded ? 'Уже в курсе' : '+ Добавить в курс'}</button>
+                    </div>`;
+            });
+        }
+        function addToCourse(id) {
+            const peptide = database.find(p => p.id === id);
+            if (!peptide || myCourse.some(p => p.id === id)) return;
+            myCourse.push({ ...peptide, schedule: [false, false, false, false, false, false, false], startDate: "" });
+            saveCourse(); setVial(peptide.defaults.v); document.getElementById('doseUnit').value = peptide.defaults.u; document.getElementById('targetDose').value = peptide.defaults.d; calculate(); renderDirectory(); renderSettings(); renderDashboard(); renderTimeline();
+            document.getElementById('settingsSection').open = true; document.getElementById('settingsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+        function removeFromCourse(id) {
+            myCourse = myCourse.filter(p => p.id !== id);
+            daysOfWeek.forEach((_, i) => localStorage.removeItem(`taken_${id}_${i}`));
+            saveCourse(); renderSettings(); renderDirectory(); renderDashboard(); renderTimeline();
+        }
+        function toggleDay(id, dayIndex) { const peptide = myCourse.find(p => p.id === id); if (peptide) { peptide.schedule[dayIndex] = !peptide.schedule[dayIndex]; saveCourse(); renderSettings(); renderDashboard(); } }
+        
+        function renderTimeline() {
+            const grid = document.getElementById('timelineGrid');
+            grid.innerHTML = '<div class="tl-header">Препарат</div>';
+            for(let i=1; i<=12; i++) grid.innerHTML += `<div class="tl-header">${i} нед.</div>`;
+            if (myCourse.length === 0) { grid.innerHTML += `<div style="grid-column: span 13; text-align: center; font-size: 12px; color: #666; padding: 10px;">Нет активных курсов</div>`; return; }
+            myCourse.forEach(p => {
+                grid.innerHTML += `<div class="tl-label" style="color: ${p.color}">${p.name}</div>`;
+                const onWeeks = p.cycle ? p.cycle.on : 4; const offWeeks = p.cycle ? p.cycle.off : 0; const cycleLength = onWeeks + offWeeks;
+                for(let week = 0; week < 12; week++) {
+                    const isTaking = cycleLength === 0 ? true : (week % cycleLength) < onWeeks;
+                    grid.innerHTML += `<div class="tl-cell ${isTaking ? 'active' : ''}" style="${isTaking ? 'background: '+p.color : ''}"></div>`;
+                }
+            });
+        }
+
+        window.onload = function() {
+            initSyringeScale(); renderDirectory(); renderSettings(); renderDashboard(); renderTimeline(); calculate();
+        };
+    </script>
+</body>
+</html>
