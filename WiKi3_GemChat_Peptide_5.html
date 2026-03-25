@@ -458,7 +458,7 @@
                 const isAdded = myCourse.some(item => item.id === p.id);
                 container.innerHTML += `
                     <div class="directory-card">
-                        <div style="display: flex; justify-content: space-between;"><strong style="color: ${p.color};">${p.name}</strong><span class="badge">${p.type}</span></div>
+                        <div style="display: flex; justify-content: space-between;"><strong style="color: ${p.color}; cursor: pointer;" onclick="openPeptideCard('${p.id}')">${p.name} ⓘ</strong><span class="badge">${p.type}</span></div>
                         <div style="font-size: 12px; color: #aaa; margin: 8px 0;">Доза: ${p.dosage}<br>Курс: ${p.course}</div>
                         <button onclick="addToCourse('${p.id}')" style="width:100%; padding:8px; border-radius:8px; border:none; background: ${isAdded ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.15)'}; color: ${isAdded ? '#888' : '#fff'};" ${isAdded ? 'disabled' : ''}>${isAdded ? 'Уже в курсе' : '+ Добавить в курс'}</button>
                     </div>`;
